@@ -140,6 +140,7 @@ const Combinations = () => {
 											label="Name"
 											size="small"
 											margin="dense"
+											required
 											value={player.name || ""}
 											onChange={(e) => handleChange(index, e)}
 										/>
@@ -149,6 +150,7 @@ const Combinations = () => {
 											label="CMV"
 											size="small"
 											margin="dense"
+											required
 											value={player.cmv || ""}
 											onChange={(e) => handleChange(index, e)}
 										/>
