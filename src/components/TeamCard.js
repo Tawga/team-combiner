@@ -1,0 +1,54 @@
+import React from "react";
+import classes from "./TeamCard.module.css";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+
+const TeamCard = (props) => {
+	const teamCap = 5260;
+	const { players, cmv } = props;
+	const leftoverCmv = teamCap - cmv;
+
+	return (
+		<div className={classes.card}>
+			<TableContainer component={Paper}>
+				<Table sx={{ minWidth: 100 }} size="small" aria-label="a dense table">
+					<TableHead>
+						<TableRow>
+							<TableCell>Name</TableCell>
+							<TableCell align="right">CMV</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{players
+							.sort((a, b) => (a.cmv < b.cmv ? 1 : -1))
+							.map((player) => (
+								<TableRow
+									key={player.name}
+									sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+								>
+									<TableCell component="th" scope="player">
+										{player.name}
+									</TableCell>
+									<TableCell align="right">{player.cmv}</TableCell>
+								</TableRow>
+							))}
+					</TableBody>
+					<TableHead>
+						<TableRow>
+							<TableCell>CMV left:</TableCell>
+							<TableCell align="right">{leftoverCmv}</TableCell>
+						</TableRow>
+					</TableHead>
+				</Table>
+			</TableContainer>
+		</div>
+	);
+};
+
+export default TeamCard;
