@@ -177,7 +177,7 @@ const Combinations = () => {
 						</Grid>
 					</Grid>
 					<Button sx={{ marginTop: 5 }} variant="contained" type="submit" fullWidth>
-						Calculate
+						Calculate rosters
 					</Button>
 				</form>
 			</Container>
