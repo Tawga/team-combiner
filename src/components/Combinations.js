@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TeamCard from "./TeamCard.js";
+import classes from "./Combinations.module.css";
 
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -27,15 +28,27 @@ const initialPlayers = [
 ];
 
 const Combinations = () => {
-	const teamCap = 5260;
 	const rosterSize = 4;
-
+	const [teamCap, setTeamCap] = useState(5260);
 	const [players, setPlayers] = useState(initialPlayers);
 	const [legalTeams, setLegalTeams] = useState([]);
 
-	const calculateTeams = () => {
+	const isLegal = useCallback(
+		(roster) => {
+			let totalCmv = 0;
+			roster.forEach((player) => {
+				totalCmv += player.cmv;
+			});
+
+			return totalCmv <= teamCap;
+		},
+		[teamCap]
+	);
+
+	const calculateTeams = useCallback(() => {
+		console.log("calculating");
 		if (players.length < rosterSize) {
-			alert("Not enough people for full roster!");
+			setLegalTeams([]);
 			return;
 		} else {
 			const allCombinations = combinations(players, rosterSize).filter(isLegal);
@@ -52,16 +65,7 @@ const Combinations = () => {
 
 			setLegalTeams(rosters.sort((a, b) => (a.totalCmv < b.totalCmv ? 1 : -1)));
 		}
-	};
-
-	const isLegal = (roster) => {
-		let totalCmv = 0;
-		roster.forEach((player) => {
-			totalCmv += player.cmv;
-		});
-
-		return totalCmv <= teamCap;
-	};
+	}, [players, isLegal]);
 
 	function combinations(a, c) {
 		let index = [];
@@ -92,11 +96,6 @@ const Combinations = () => {
 		return result;
 	}
 
-	const submitHandler = (event) => {
-		event.preventDefault();
-		calculateTeams();
-	};
-
 	let handleChange = (i, e) => {
 		let newFormValues = [...players];
 		if (e.target.name === "cmv") {
@@ -104,7 +103,6 @@ const Combinations = () => {
 		} else {
 			newFormValues[i][e.target.name] = e.target.value;
 		}
-
 		setPlayers(newFormValues);
 	};
 
@@ -118,17 +116,37 @@ const Combinations = () => {
 		setPlayers(newFormValues);
 	};
 
+	useEffect(() => {
+		calculateTeams();
+	}, [players, calculateTeams]);
+
+	const teamCapHandler = (event) =>  {
+		if(event.target.value >= 0){
+			setTeamCap(event.target.value);
+		}
+		
+	}
+
 	return (
-		<div>
-			<div>
-				<p></p>
-			</div>
-			<Container maxWidth="lg">
-				<form onSubmit={submitHandler}>
+		<React.Fragment>
+			<Container maxWidth="lg" className={classes.container}>
+				<TextField
+					type="text"
+					name="teamCap"
+					label="Team Cap"
+					size="small"
+					margin="dense"
+					required
+					value={teamCap}
+					onChange={teamCapHandler}
+				/>
+			</Container>
+			<Container maxWidth="lg" className={classes.container}>
+				<form>
 					<Grid container spacing={2}>
 						{players.map((player, index) => {
 							return (
-								<Grid xs={6} md={4} key={index}>
+								<Grid key={index} xs={6} md={4}>
 									<Card
 										sx={{
 											padding: 4,
@@ -166,7 +184,7 @@ const Combinations = () => {
 								</Grid>
 							);
 						})}
-						<Grid  xs={6} md={4}>
+						<Grid xs={6} md={4}>
 							<Button
 								variant="contained"
 								className="button add"
@@ -178,29 +196,23 @@ const Combinations = () => {
 							</Button>
 						</Grid>
 					</Grid>
-					<Button sx={{ marginTop: 5 }} variant="contained" type="submit" fullWidth>
-						Calculate rosters
-					</Button>
 				</form>
 			</Container>
-
-			<h1>Possible rosters: {legalTeams.length}</h1>
-			<Grid
-				container
-				spacing={{ xs: 3, md: 3 }}
-				columns={{ xs: 4, sm: 8, md: 12 }}
-			>
-				{legalTeams.map((team, index) => {
-					return (
-						<Grid key={index} xs={2} sm={4} md={4}>
-							<Card>
-								<TeamCard players={team.players} cmv={team.totalCmv} />
-							</Card>
-						</Grid>
-					);
-				})}
-			</Grid>
-		</div>
+			<Container maxWidth="lg">
+				<h3>Possible rosters: {legalTeams.length}</h3>
+				<Grid container spacing={2}>
+					{legalTeams.map((team, index) => {
+						return (
+							<Grid key={index} xs={2} sm={4} md={4}>
+								<Card>
+									<TeamCard players={team.players} cmv={team.totalCmv} />
+								</Card>
+							</Grid>
+						);
+					})}
+				</Grid>
+			</Container>
+		</React.Fragment>
 	);
 };
 

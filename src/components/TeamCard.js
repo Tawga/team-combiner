@@ -27,9 +27,9 @@ const TeamCard = (props) => {
 					<TableBody>
 						{players
 							.sort((a, b) => (a.cmv < b.cmv ? 1 : -1))
-							.map((player) => (
+							.map((player, index) => (
 								<TableRow
-									key={player.name}
+									key={index}
 									sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
 								>
 									<TableCell component="th" scope="player">
