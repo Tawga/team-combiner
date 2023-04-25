@@ -129,7 +129,7 @@ const Combinations = () => {
 
 	return (
 		<React.Fragment>
-			<Container maxWidth="lg" className={classes.container}>
+			<Container maxWidth="lg" className={classes["container-top"]}>
 				<TextField
 					type="text"
 					name="teamCap"
@@ -203,7 +203,7 @@ const Combinations = () => {
 				<Grid container spacing={2}>
 					{legalTeams.map((team, index) => {
 						return (
-							<Grid key={index} xs={2} sm={4} md={4}>
+							<Grid key={index} xs={6} sm={4} md={3}>
 								<Card>
 									<TeamCard players={team.players} cmv={team.totalCmv} />
 								</Card>
