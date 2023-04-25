@@ -1,72 +1,65 @@
 import React, { useState, useEffect, useCallback } from "react";
-import TeamCard from "./TeamCard.js";
-import classes from "./Combinations.module.css";
+import initialPlayers from "../InitialPlayers.js";
 
-import Card from "@mui/material/Card";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Unstable_Grid2";
-import TextField from "@mui/material/TextField";
-import Container from "@mui/material/Container";
-
-const initialPlayers = [
-	{
-		name: "Player 1",
-		cmv: 1200,
-	},
-	{
-		name: "Player 2",
-		cmv: 1200,
-	},
-	{
-		name: "Player 3",
-		cmv: 1200,
-	},
-	{
-		name: "Player 4",
-		cmv: 1200,
-	},
-];
+import TeamCap from "./TeamCap.js";
+import Rosters from "./Rosters";
+import PlayerForm from "./PlayerForm";
 
 const Combinations = () => {
 	const rosterSize = 4;
 	const [teamCap, setTeamCap] = useState(5260);
 	const [players, setPlayers] = useState(initialPlayers);
-	const [legalTeams, setLegalTeams] = useState([]);
-
-	const isLegal = useCallback(
-		(roster) => {
-			let totalCmv = 0;
-			roster.forEach((player) => {
-				totalCmv += player.cmv;
-			});
-
-			return totalCmv <= teamCap;
-		},
-		[teamCap]
-	);
+	const [possibleRosters, setPossibleRosters] = useState([]);
 
 	const calculateTeams = useCallback(() => {
 		if (players.length < rosterSize) {
-			setLegalTeams([]);
+			setPossibleRosters([]);
 			return;
 		} else {
-			const allCombinations = combinations(players, rosterSize).filter(isLegal);
+			// Calculate all combinations and filter allowed rosters
+			const allCombinations = combinations(players, rosterSize).filter(
+				(roster) => {
+					let totalCmv = 0;
+					roster.forEach((player) => {
+						totalCmv += player.cmv;
+					});
+					return totalCmv <= teamCap;
+				}
+			);
 
-			const rosters = allCombinations.map((combination) => {
+			// Filter only rosters with locked team mates
+			const lockedPlayers = players
+				.filter((player) => player.lock === true)
+				.map((player) => player.name);
+
+			let filteredRoster = allCombinations;
+			if (lockedPlayers.length > 0) {
+				filteredRoster = allCombinations.filter((subArr) =>
+					lockedPlayers.every((val) => subArr.some((obj) => obj.name === val))
+				);
+			}
+
+			// Calculate total CMV values of the roster
+			const rosters = filteredRoster.map((combination) => {
 				let totalCmv = 0;
 				combination.forEach((player) => {
 					totalCmv += player.cmv;
 				});
-
 				const roster = { players: combination, totalCmv: totalCmv };
 				return roster;
 			});
 
-			setLegalTeams(rosters.sort((a, b) => (a.totalCmv < b.totalCmv ? 1 : -1)));
+			setPossibleRosters(
+				rosters.sort((a, b) => (a.totalCmv < b.totalCmv ? 1 : -1))
+			);
 		}
-	}, [players, isLegal]);
+	}, [players, teamCap]);
 
-	function combinations(a, c) {
+	useEffect(() => {
+		calculateTeams();
+	}, [players, calculateTeams]);
+
+	const combinations = (a, c) => {
 		let index = [];
 		let n = a.length;
 
@@ -93,124 +86,13 @@ const Combinations = () => {
 			}
 		}
 		return result;
-	}
-
-	let handleChange = (i, e) => {
-		let newFormValues = [...players];
-		if (e.target.name === "cmv") {
-			newFormValues[i][e.target.name] = Number(e.target.value);
-		} else {
-			newFormValues[i][e.target.name] = e.target.value;
-		}
-		setPlayers(newFormValues);
 	};
-
-	let addFormFields = () => {
-		setPlayers([...players, { name: "", cmv: 1200 }]);
-	};
-
-	let removeFormFields = (i) => {
-		let newFormValues = [...players];
-		newFormValues.splice(i, 1);
-		setPlayers(newFormValues);
-	};
-
-	useEffect(() => {
-		calculateTeams();
-	}, [players, calculateTeams]);
-
-	const teamCapHandler = (event) =>  {
-		if(event.target.value >= 0){
-			setTeamCap(event.target.value);
-		}
-		
-	}
 
 	return (
 		<React.Fragment>
-			<Container maxWidth="lg" className={classes["container-top"]}>
-				<TextField
-					type="text"
-					name="teamCap"
-					label="Team Cap"
-					size="small"
-					margin="dense"
-					required
-					value={teamCap}
-					onChange={teamCapHandler}
-				/>
-			</Container>
-			<Container maxWidth="lg" className={classes.container}>
-				<form>
-					<Grid container spacing={2}>
-						{players.map((player, index) => {
-							return (
-								<Grid key={index} xs={6} md={4}>
-									<Card
-										sx={{
-											padding: 4,
-										}}
-									>
-										<TextField
-											type="text"
-											name="name"
-											label="Name"
-											size="small"
-											margin="dense"
-											required
-											value={player.name || ""}
-											onChange={(e) => handleChange(index, e)}
-										/>
-										<TextField
-											type="number"
-											name="cmv"
-											label="CMV"
-											size="small"
-											margin="dense"
-											required
-											value={player.cmv || ""}
-											onChange={(e) => handleChange(index, e)}
-										/>
-
-										<Button
-											type="button"
-											className="button remove"
-											onClick={() => removeFormFields(index)}
-										>
-											Remove
-										</Button>
-									</Card>
-								</Grid>
-							);
-						})}
-						<Grid xs={6} md={4}>
-							<Button
-								variant="contained"
-								className="button add"
-								fullWidth
-								type="button"
-								onClick={() => addFormFields()}
-							>
-								Add New Player
-							</Button>
-						</Grid>
-					</Grid>
-				</form>
-			</Container>
-			<Container maxWidth="lg">
-				<h3>Possible rosters: {legalTeams.length}</h3>
-				<Grid container spacing={2}>
-					{legalTeams.map((team, index) => {
-						return (
-							<Grid key={index} xs={6} sm={4} md={3}>
-								<Card>
-									<TeamCard players={team.players} cap={teamCap} cmv={team.totalCmv} />
-								</Card>
-							</Grid>
-						);
-					})}
-				</Grid>
-			</Container>
+			<TeamCap teamCap={teamCap} setTeamCap={setTeamCap} />
+			<PlayerForm setPlayers={setPlayers} players={players} />
+			<Rosters legalTeams={possibleRosters} teamCap={teamCap} />
 		</React.Fragment>
 	);
 };

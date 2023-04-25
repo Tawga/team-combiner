@@ -1,6 +1,7 @@
 import React from "react";
 import classes from "./TeamCard.module.css";
 
+import LockIcon from '@mui/icons-material/Lock';
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -33,7 +34,7 @@ const TeamCard = (props) => {
 									sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
 								>
 									<TableCell component="th" scope="player">
-										{player.name}
+										 {player.name} {player.lock && <LockIcon sx={{ height:12}}/>}
 									</TableCell>
 									<TableCell align="right">{player.cmv}</TableCell>
 								</TableRow>
