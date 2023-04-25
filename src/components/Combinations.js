@@ -46,7 +46,6 @@ const Combinations = () => {
 	);
 
 	const calculateTeams = useCallback(() => {
-		console.log("calculating");
 		if (players.length < rosterSize) {
 			setLegalTeams([]);
 			return;
@@ -205,7 +204,7 @@ const Combinations = () => {
 						return (
 							<Grid key={index} xs={6} sm={4} md={3}>
 								<Card>
-									<TeamCard players={team.players} cmv={team.totalCmv} />
+									<TeamCard players={team.players} cap={teamCap} cmv={team.totalCmv} />
 								</Card>
 							</Grid>
 						);

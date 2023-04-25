@@ -10,7 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 const TeamCard = (props) => {
-	const teamCap = 5260;
+	const teamCap = props.cap;
 	const { players, cmv } = props;
 	const leftoverCmv = teamCap - cmv;
 
