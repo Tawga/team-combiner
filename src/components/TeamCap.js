@@ -1,31 +1,80 @@
-import React from 'react'
+import React, { useState } from "react";
 import classes from "./Combinations.module.css";
-import { Container, TextField } from '@mui/material'
+import {
+	Container,
+	TextField,
+	Select,
+	OutlinedInput,
+	MenuItem,
+	FormControl,
+	InputLabel,
+} from "@mui/material";
 
 const TeamCap = (props) => {
+	const tierCaps = [
+		{ name: "Premier", cap: 8800 },
+		{ name: "Master", cap: 7420 },
+		{ name: "Elite", cap: 6755 },
+		{ name: "Rival", cap: 6335 },
+		{ name: "Challenger", cap: 5975 },
+		{ name: "Prospect", cap: 5260 },
+	];
 
-    const {teamCap, setTeamCap} = props;
+	const { teamCap, setTeamCap } = props;
+	const [selectedTier, setSelectedTier] = useState(5260);
+	const [custom, setCustom] = useState(false);
 
-    const teamCapHandler = (event) => {
+	const teamCapHandler = (event) => {
 		if (event.target.value >= 0) {
 			setTeamCap(event.target.value);
 		}
 	};
 
-  return (
-    <Container maxWidth="lg" className={classes["container-top"]}>
+	const dropdownHandler = (event) => {
+		if (event.target.value === "custom") {
+			setCustom(true);
+		} else {
+			setCustom(false);
+			setTeamCap(event.target.value);
+		}
+		setSelectedTier(event.target.value);
+	};
+
+	return (
+		<Container maxWidth="lg" className={classes["container-top"]}>
+			<FormControl sx={{ m: 1, width: 300 }}>
+				<InputLabel>RSC Team Cap</InputLabel>
+				<Select
+					size="small"
+					value={selectedTier}
+					onChange={dropdownHandler}
+					input={<OutlinedInput label="RSC Team Cap" />}
+				>
+					{tierCaps.map((tier) => {
+						return (
+							<MenuItem key={tier.name} value={tier.cap}>
+								{tier.name} - {tier.cap}
+							</MenuItem>
+						);
+					})}
+					<MenuItem value={"custom"}>Custom</MenuItem>
+				</Select>
+			</FormControl>
+
+			{custom && (
 				<TextField
 					type="number"
 					name="teamCap"
-					label="Team Cap"
+					label="Custom cap"
 					size="small"
 					margin="dense"
 					required
 					value={teamCap}
 					onChange={teamCapHandler}
 				/>
-			</Container>
-  )
-}
+			)}
+		</Container>
+	);
+};
 
-export default TeamCap
+export default TeamCap;

@@ -5,13 +5,13 @@ import TeamCard from "./TeamCard";
 
 const Rosters = (props) => {
 
-    const {legalTeams, teamCap} = props;
+    const {possibleRosters, teamCap} = props;
 
 	return (
 		<Container maxWidth="lg">
-			<h3>Possible rosters: {legalTeams.length}</h3>
+			<h3>Possible rosters: {possibleRosters.length}</h3>
 			<Grid container spacing={2}>
-				{legalTeams.map((team, index) => {
+				{possibleRosters.map((team, index) => {
 					return (
 						<Grid key={index} xs={6} sm={4} md={3}>
 							<Card>

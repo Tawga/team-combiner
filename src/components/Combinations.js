@@ -11,6 +11,35 @@ const Combinations = () => {
 	const [players, setPlayers] = useState(initialPlayers);
 	const [possibleRosters, setPossibleRosters] = useState([]);
 
+	const combinations = (a, c) => {
+		let index = [];
+		let n = a.length;
+
+		for (let j = 0; j < c; j++) index[j] = j;
+		index[c] = n;
+
+		let ok = true;
+		let result = [];
+
+		while (ok) {
+			let comb = [];
+			for (let j = 0; j < c; j++) comb[j] = a[index[j]];
+			result.push(comb);
+
+			ok = false;
+
+			for (let j = c; j > 0; j--) {
+				if (index[j - 1] < index[j] - 1) {
+					index[j - 1]++;
+					for (let k = j; k < c; k++) index[k] = index[k - 1] + 1;
+					ok = true;
+					break;
+				}
+			}
+		}
+		return result;
+	};
+
 	const calculateTeams = useCallback(() => {
 		if (players.length < rosterSize) {
 			setPossibleRosters([]);
@@ -59,40 +88,11 @@ const Combinations = () => {
 		calculateTeams();
 	}, [players, calculateTeams]);
 
-	const combinations = (a, c) => {
-		let index = [];
-		let n = a.length;
-
-		for (let j = 0; j < c; j++) index[j] = j;
-		index[c] = n;
-
-		let ok = true;
-		let result = [];
-
-		while (ok) {
-			let comb = [];
-			for (let j = 0; j < c; j++) comb[j] = a[index[j]];
-			result.push(comb);
-
-			ok = false;
-
-			for (let j = c; j > 0; j--) {
-				if (index[j - 1] < index[j] - 1) {
-					index[j - 1]++;
-					for (let k = j; k < c; k++) index[k] = index[k - 1] + 1;
-					ok = true;
-					break;
-				}
-			}
-		}
-		return result;
-	};
-
 	return (
 		<React.Fragment>
 			<TeamCap teamCap={teamCap} setTeamCap={setTeamCap} />
 			<PlayerForm setPlayers={setPlayers} players={players} />
-			<Rosters legalTeams={possibleRosters} teamCap={teamCap} />
+			<Rosters possibleRosters={possibleRosters} teamCap={teamCap} />
 		</React.Fragment>
 	);
 };

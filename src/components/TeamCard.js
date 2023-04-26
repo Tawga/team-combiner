@@ -1,7 +1,7 @@
 import React from "react";
 import classes from "./TeamCard.module.css";
 
-import LockIcon from '@mui/icons-material/Lock';
+import LockIcon from "@mui/icons-material/Lock";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -28,17 +28,20 @@ const TeamCard = (props) => {
 					<TableBody>
 						{players
 							.sort((a, b) => (a.cmv < b.cmv ? 1 : -1))
-							.map((player, index) => (
-								<TableRow
-									key={index}
-									sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-								>
-									<TableCell component="th" scope="player">
-										 {player.name} {player.lock && <LockIcon sx={{ height:12}}/>}
-									</TableCell>
-									<TableCell align="right">{player.cmv}</TableCell>
-								</TableRow>
-							))}
+							.map((player, index) => {
+								const bgColor = player.highlight ? "#b3dfaacc" : null;
+
+
+								return (
+									<TableRow key={index} sx={{ backgroundColor: bgColor }}>
+										<TableCell component="th" scope="player">
+											{player.name}{" "}
+											{player.lock && <LockIcon sx={{ height: 12 }} />}
+										</TableCell>
+										<TableCell align="right">{player.cmv}</TableCell>
+									</TableRow>
+								);
+							})}
 					</TableBody>
 					<TableHead>
 						<TableRow>

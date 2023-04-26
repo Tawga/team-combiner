@@ -12,10 +12,13 @@ import {
 import Grid from "@mui/material/Unstable_Grid2";
 
 const PlayerForm = (props) => {
-	const { players, setPlayers} = props;
+	const { players, setPlayers } = props;
 
-    const addFormFields = () => {
-		setPlayers([...players, { name: "", cmv: 1200, lock: false }]);
+	const addFormFields = () => {
+		setPlayers([
+			...players,
+			{ name: "", cmv: 1200, lock: false, highlight: false },
+		]);
 	};
 
 	const removeFormFields = (i) => {
@@ -24,7 +27,7 @@ const PlayerForm = (props) => {
 		setPlayers(newFormValues);
 	};
 
-    const handleChange = (i, event) => {
+	const handleChange = (i, event) => {
 		let newFormValues = [...players];
 		if (event.target.name === "cmv") {
 			newFormValues[i][event.target.name] = Number(event.target.value);
@@ -34,11 +37,11 @@ const PlayerForm = (props) => {
 		setPlayers(newFormValues);
 	};
 
-    const lockHandler = (i, event) => {
-        let newFormValues = [...players];
-        newFormValues[i][event.target.name] = !newFormValues[i][event.target.name];
-        setPlayers(newFormValues);
-    }
+	const toggleHandler = (i, event) => {
+		let newFormValues = [...players];
+		newFormValues[i][event.target.name] = !newFormValues[i][event.target.name];
+		setPlayers(newFormValues);
+	};
 
 	return (
 		<Container maxWidth="lg" className={classes.container}>
@@ -59,6 +62,7 @@ const PlayerForm = (props) => {
 										size="small"
 										margin="dense"
 										required
+										fullWidth
 										value={player.name || ""}
 										onChange={(e) => handleChange(index, e)}
 									/>
@@ -69,6 +73,7 @@ const PlayerForm = (props) => {
 										size="small"
 										margin="dense"
 										required
+										fullWidth
 										value={player.cmv || ""}
 										onChange={(e) => handleChange(index, e)}
 									/>
@@ -76,12 +81,21 @@ const PlayerForm = (props) => {
 									<FormControlLabel
 										control={<Checkbox name="lock" checked={player.lock} />}
 										label="Lock to roster"
-                                        onClick={(e) => lockHandler(index, e)}
+										onClick={(e) => toggleHandler(index, e)}
+									/>
+
+									<FormControlLabel
+										control={
+											<Checkbox name="highlight" checked={player.highlight} />
+										}
+										label="Highlight"
+										onClick={(e) => toggleHandler(index, e)}
 									/>
 
 									<Button
 										type="button"
 										className="button remove"
+										fullWidth
 										onClick={() => removeFormFields(index)}
 									>
 										Remove
