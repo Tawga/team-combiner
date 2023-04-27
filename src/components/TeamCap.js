@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import classes from "./Combinations.module.css";
 import {
 	Container,
 	TextField,
@@ -9,18 +8,10 @@ import {
 	FormControl,
 	InputLabel,
 } from "@mui/material";
+import classes from "./Combinations.module.css";
+import tierCaps from "../TierCaps";
 
-const TeamCap = (props) => {
-	const tierCaps = [
-		{ name: "Premier", cap: 8800 },
-		{ name: "Master", cap: 7420 },
-		{ name: "Elite", cap: 6755 },
-		{ name: "Rival", cap: 6335 },
-		{ name: "Challenger", cap: 5975 },
-		{ name: "Prospect", cap: 5260 },
-	];
-
-	const { teamCap, setTeamCap } = props;
+const TeamCap = ({ teamCap, setTeamCap }) => {
 	const [selectedTier, setSelectedTier] = useState(5260);
 	const [custom, setCustom] = useState(false);
 
@@ -50,13 +41,11 @@ const TeamCap = (props) => {
 					onChange={dropdownHandler}
 					input={<OutlinedInput label="RSC Team Cap" />}
 				>
-					{tierCaps.map((tier) => {
-						return (
-							<MenuItem key={tier.name} value={tier.cap}>
-								{tier.name} - {tier.cap}
-							</MenuItem>
-						);
-					})}
+					{tierCaps.map((tier) => (
+						<MenuItem key={tier.name} value={tier.cap}>
+							{tier.name} - {tier.cap}
+						</MenuItem>
+					))}
 					<MenuItem value={"custom"}>Custom</MenuItem>
 				</Select>
 			</FormControl>

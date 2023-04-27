@@ -1,6 +1,4 @@
-import React from "react";
-import classes from "./Combinations.module.css";
-
+import React, { useCallback } from "react";
 import {
 	Container,
 	Card,
@@ -10,38 +8,53 @@ import {
 	FormControlLabel,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
+import classes from "./Combinations.module.css";
 
-const PlayerForm = (props) => {
-	const { players, setPlayers } = props;
-
-	const addFormFields = () => {
+const PlayerForm = ({ players, setPlayers }) => {
+	const addFormFields = useCallback(() => {
 		setPlayers([
 			...players,
-			{ name: "", cmv: 1200, lock: false, highlight: false },
+			{
+				name: "Player " + (players.length + 1),
+				cmv: 1200,
+				lock: false,
+				highlight: false,
+			},
 		]);
-	};
+	}, [players, setPlayers]);
 
-	const removeFormFields = (i) => {
-		let newFormValues = [...players];
-		newFormValues.splice(i, 1);
-		setPlayers(newFormValues);
-	};
+	const removeFormField = useCallback(
+		(index) => {
+			setPlayers(players.filter((_, i) => i !== index));
+		},
+		[players, setPlayers]
+	);
 
-	const handleChange = (i, event) => {
-		let newFormValues = [...players];
-		if (event.target.name === "cmv") {
-			newFormValues[i][event.target.name] = Number(event.target.value);
-		} else {
-			newFormValues[i][event.target.name] = event.target.value;
-		}
-		setPlayers(newFormValues);
-	};
+	const handleFieldChange = useCallback(
+		(index, event) => {
+			const { name, value } = event.target;
+			setPlayers(
+				players.map((player, i) =>
+					i === index
+						? { ...player, [name]: name === "cmv" ? Number(value) : value }
+						: player
+				)
+			);
+		},
+		[players, setPlayers]
+	);
 
-	const toggleHandler = (i, event) => {
-		let newFormValues = [...players];
-		newFormValues[i][event.target.name] = !newFormValues[i][event.target.name];
-		setPlayers(newFormValues);
-	};
+	const handleCheckboxToggle = useCallback(
+		(index, event) => {
+			const { name } = event.target;
+			setPlayers(
+				players.map((player, i) =>
+					i === index ? { ...player, [name]: !player[name] } : player
+				)
+			);
+		},
+		[players, setPlayers]
+	);
 
 	return (
 		<Container maxWidth="lg" className={classes.container}>
@@ -61,10 +74,9 @@ const PlayerForm = (props) => {
 										label="Name"
 										size="small"
 										margin="dense"
-										required
 										fullWidth
 										value={player.name || ""}
-										onChange={(e) => handleChange(index, e)}
+										onChange={(e) => handleFieldChange(index, e)}
 									/>
 									<TextField
 										type="number"
@@ -72,16 +84,15 @@ const PlayerForm = (props) => {
 										label="CMV"
 										size="small"
 										margin="dense"
-										required
 										fullWidth
 										value={player.cmv || ""}
-										onChange={(e) => handleChange(index, e)}
+										onChange={(e) => handleFieldChange(index, e)}
 									/>
 
 									<FormControlLabel
 										control={<Checkbox name="lock" checked={player.lock} />}
 										label="Lock to roster"
-										onClick={(e) => toggleHandler(index, e)}
+										onClick={(e) => handleCheckboxToggle(index, e)}
 									/>
 
 									<FormControlLabel
@@ -89,14 +100,14 @@ const PlayerForm = (props) => {
 											<Checkbox name="highlight" checked={player.highlight} />
 										}
 										label="Highlight"
-										onClick={(e) => toggleHandler(index, e)}
+										onClick={(e) => handleCheckboxToggle(index, e)}
 									/>
 
 									<Button
 										type="button"
 										className="button remove"
 										fullWidth
-										onClick={() => removeFormFields(index)}
+										onClick={() => removeFormField(index)}
 									>
 										Remove
 									</Button>

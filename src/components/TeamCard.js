@@ -9,16 +9,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
-const TeamCard = (props) => {
-	const teamCap = props.cap;
-	const { players, cmv } = props;
-	const leftoverCmv = teamCap - cmv;
+import { sortBy } from "lodash"
+ 
+const TeamCard = ({ cap: teamCap, players, cmv }) => {
 
 	return (
 		<div className={classes.card}>
 			<TableContainer component={Paper}>
-				<Table sx={{ minWidth: 100 }} size="small" aria-label="a dense table">
+				<Table sx={{ minWidth: 100 }} size="small">
 					<TableHead>
 						<TableRow>
 							<TableCell>Name</TableCell>
@@ -26,27 +24,27 @@ const TeamCard = (props) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{players
-							.sort((a, b) => (a.cmv < b.cmv ? 1 : -1))
-							.map((player, index) => {
-								const bgColor = player.highlight ? "#b3dfaacc" : null;
-
-
-								return (
-									<TableRow key={index} sx={{ backgroundColor: bgColor }}>
-										<TableCell component="th" scope="player">
-											{player.name}{" "}
-											{player.lock && <LockIcon sx={{ height: 12 }} />}
-										</TableCell>
-										<TableCell align="right">{player.cmv}</TableCell>
-									</TableRow>
-								);
-							})}
+						{sortBy(players, ["cmv"])
+							.reverse()
+							.map((player, index) => (
+								<TableRow
+									key={index}
+									sx={{
+										backgroundColor: player.highlight ? "#b3dfaacc" : null,
+									}}
+								>
+									<TableCell component="th" scope="player">
+										{player.name}{" "}
+										{player.lock && <LockIcon sx={{ height: 12 }} />}
+									</TableCell>
+									<TableCell align="right">{player.cmv}</TableCell>
+								</TableRow>
+							))}
 					</TableBody>
 					<TableHead>
 						<TableRow>
 							<TableCell>CMV left:</TableCell>
-							<TableCell align="right">{leftoverCmv}</TableCell>
+							<TableCell align="right">{teamCap - cmv}</TableCell>
 						</TableRow>
 					</TableHead>
 				</Table>
