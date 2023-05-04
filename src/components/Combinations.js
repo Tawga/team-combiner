@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import initialPlayers from "../InitialPlayers.js";
 import { sortBy } from "lodash";
-import TeamCap from "./TeamCap.js";
+import Settings from "./Settings.js";
 import Rosters from "./Rosters";
 import PlayerForm from "./PlayerForm";
+import { useLocation } from "react-router-dom";
 
 const Combinations = () => {
 	const rosterSize = 4;
 	const [teamCap, setTeamCap] = useState(5260);
 	const [players, setPlayers] = useState(initialPlayers);
 	const [possibleRosters, setPossibleRosters] = useState([]);
+	const location = useLocation();
 
 	// Generates all possible combinations of players
 	const generateCombinations = useCallback((arr, size) => {
@@ -92,9 +94,18 @@ const Combinations = () => {
 		calculatePossibleRosters();
 	}, [players, teamCap, calculatePossibleRosters]);
 
+	useEffect(() => {
+		if (location.search !== "") {
+			const queryParams = new URLSearchParams(location.search);
+			const playersString = queryParams.get("players");
+			const sharedPlayers = JSON.parse(decodeURIComponent(playersString));
+			setPlayers(sharedPlayers);
+		}
+	}, [location.search]);
+
 	return (
 		<>
-			<TeamCap teamCap={teamCap} setTeamCap={setTeamCap} />
+			<Settings teamCap={teamCap} setTeamCap={setTeamCap} players={players} />
 			<PlayerForm setPlayers={setPlayers} players={players} />
 			<Rosters possibleRosters={possibleRosters} teamCap={teamCap} />
 		</>

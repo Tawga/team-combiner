@@ -8,10 +8,12 @@ import {
 	FormControl,
 	InputLabel,
 } from "@mui/material";
+
 import classes from "./Combinations.module.css";
 import tierCaps from "../TierCaps";
+import CopyTeamButton from "./CopyTeamButton";
 
-const TeamCap = ({ teamCap, setTeamCap }) => {
+const Settings = ({ teamCap, setTeamCap, players }) => {
 	const [selectedTier, setSelectedTier] = useState(5260);
 	const [custom, setCustom] = useState(false);
 
@@ -62,8 +64,9 @@ const TeamCap = ({ teamCap, setTeamCap }) => {
 					onChange={teamCapHandler}
 				/>
 			)}
+			<CopyTeamButton players={players} />
 		</Container>
 	);
 };
 
-export default TeamCap;
+export default Settings;
