@@ -14,7 +14,7 @@ import tierCaps from "../TierCaps";
 import CopyTeamButton from "./CopyTeamButton";
 
 const Settings = ({ teamCap, setTeamCap, players }) => {
-	const [selectedTier, setSelectedTier] = useState(5260);
+	const [selectedTier, setSelectedTier] = useState(teamCap);
 	const [custom, setCustom] = useState(false);
 
 	const teamCapHandler = (event) => {

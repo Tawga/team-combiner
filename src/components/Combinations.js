@@ -1,22 +1,26 @@
 import React, { useState, useEffect, useCallback } from "react";
 import initialPlayers from "../InitialPlayers.js";
-import { sortBy } from "lodash";
+
 import Settings from "./Settings.js";
 import Rosters from "./Rosters";
 import PlayerForm from "./PlayerForm";
+import tierCaps from "../TierCaps.js";
+
+import { sortBy } from "lodash";
 import { useLocation } from "react-router-dom";
 
 const Combinations = () => {
 	const rosterSize = 4;
-	const [teamCap, setTeamCap] = useState(5260);
-	const [players, setPlayers] = useState(initialPlayers);
+	const [teamCap, setTeamCap] = useState(
+		tierCaps[tierCaps.findIndex((x) => x.name === "Prospect")].cap
+	);
+	const [players, setPlayers] = useState([]);
 	const [possibleRosters, setPossibleRosters] = useState([]);
 	const location = useLocation();
 
 	// Generates all possible combinations of players
 	const generateCombinations = useCallback((arr, size) => {
 		const result = [];
-
 		const recurse = (start, combination) => {
 			if (combination.length === size) {
 				result.push(combination);

@@ -16,7 +16,7 @@ const PlayerForm = ({ players, setPlayers }) => {
 			...players,
 			{
 				name: "Player " + (players.length + 1),
-				cmv: 1200,
+				cmv: 0,
 				lock: false,
 				highlight: false,
 			},
