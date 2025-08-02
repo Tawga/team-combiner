@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import _ from "lodash";
 import {
 	Container,
 	TextField,
@@ -9,13 +10,24 @@ import {
 	InputLabel,
 } from "@mui/material";
 
+import { fetchTierCaps } from "../utils/firebase";
 import classes from "./Combinations.module.css";
-import tierCaps from "../TierCaps";
 import CopyTeamButton from "./CopyTeamButton";
+
 
 const Settings = ({ teamCap, setTeamCap, players }) => {
 	const [selectedTier, setSelectedTier] = useState(teamCap);
 	const [custom, setCustom] = useState(false);
+	const [tierCaps, setTierCaps] = useState([]);
+	
+	useEffect(()=> {
+		const getCaps = async () => {
+			const data = await fetchTierCaps();
+			setTierCaps(data);
+		};
+
+		getCaps();
+	},[]);
 
 	const teamCapHandler = (event) => {
 		if (event.target.value >= 0) {
@@ -44,8 +56,8 @@ const Settings = ({ teamCap, setTeamCap, players }) => {
 					input={<OutlinedInput label="RSC Team Cap" />}
 				>
 					{tierCaps.map((tier) => (
-						<MenuItem key={tier.name} value={tier.cap}>
-							{tier.name} - {tier.cap}
+						<MenuItem key={tier.id} value={tier.cap}>
+							{_.startCase(tier.id)} - {tier.cap}
 						</MenuItem>
 					))}
 					<MenuItem value={"custom"}>Custom</MenuItem>
