@@ -1,19 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import initialPlayers from "../InitialPlayers.js";
-
 import Settings from "./Settings.js";
 import Rosters from "./Rosters";
 import PlayerForm from "./PlayerForm";
-import tierCaps from "../TierCaps.js";
 
 import { sortBy } from "lodash";
 import { useLocation } from "react-router-dom";
 
 const Combinations = () => {
 	const rosterSize = 4;
-	const [teamCap, setTeamCap] = useState(
-		tierCaps[tierCaps.findIndex((x) => x.name === "Prospect")].cap
-	);
+	const [teamCap, setTeamCap] = useState();
 	const [players, setPlayers] = useState([]);
 	const [possibleRosters, setPossibleRosters] = useState([]);
 	const location = useLocation();

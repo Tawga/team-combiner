@@ -48,12 +48,12 @@ const Settings = ({ teamCap, setTeamCap, players }) => {
 	return (
 		<Container maxWidth="lg" className={classes["container-top"]}>
 			<FormControl sx={{ m: 1, width: 300 }}>
-				<InputLabel>RSC Team Cap</InputLabel>
+				<InputLabel>Select Team Cap</InputLabel>
 				<Select
 					size="small"
 					value={selectedTier}
 					onChange={dropdownHandler}
-					input={<OutlinedInput label="RSC Team Cap" />}
+					input={<OutlinedInput label="Select Team Cap" />}
 				>
 					{tierCaps.map((tier) => (
 						<MenuItem key={tier.id} value={tier.cap}>
