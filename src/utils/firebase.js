@@ -20,5 +20,5 @@ export const fetchTierCaps = async () => {
         id: doc.id,
         ...doc.data()
     }));
-    return tierCaps;
+    return tierCaps.sort((a,b) => a.cap - b.cap);
 }
