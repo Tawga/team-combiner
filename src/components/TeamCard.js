@@ -13,14 +13,16 @@ import { sortBy } from "lodash"
  
 const TeamCard = ({ cap: teamCap, players, cmv }) => {
 
+	const cmvLeft = teamCap - cmv;
+
 	return (
 		<div className={classes.card}>
 			<TableContainer component={Paper}>
 				<Table sx={{ minWidth: 100 }} size="small">
 					<TableHead>
 						<TableRow>
-							<TableCell>Name</TableCell>
-							<TableCell align="right">CMV</TableCell>
+							<TableCell sx={{fontWeight:"bold"}}>Name</TableCell>
+							<TableCell align="right" sx={{fontWeight:"bold"}}>CMV</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -30,7 +32,7 @@ const TeamCard = ({ cap: teamCap, players, cmv }) => {
 								<TableRow
 									key={index}
 									sx={{
-										backgroundColor: player.highlight ? "#b3dfaacc" : null,
+										backgroundColor: player.highlight ? "#86d875cc" : null,
 									}}
 								>
 									<TableCell component="th" scope="player">
@@ -42,9 +44,9 @@ const TeamCard = ({ cap: teamCap, players, cmv }) => {
 							))}
 					</TableBody>
 					<TableHead>
-						<TableRow>
+						<TableRow sx={{ backgroundColor: cmvLeft<=25 ? "#cfebcacc": "#fcf6a4cc" }}>
 							<TableCell>CMV left:</TableCell>
-							<TableCell align="right">{teamCap - cmv}</TableCell>
+							<TableCell align="right">{cmvLeft}</TableCell>
 						</TableRow>
 					</TableHead>
 				</Table>

@@ -19,6 +19,7 @@
 .env.production.local
 
 .firebase
+.firebase/hosting.YnVpbGQ.cache
 firebase.json
 .firebaserc
 /.github

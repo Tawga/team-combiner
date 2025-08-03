@@ -9,7 +9,7 @@ const router = createBrowserRouter([
 	{
 		path: "/",
 		element: (
-			<Container maxWidth="lg">
+			<Container maxWidth="lg" sx={{marginBottom: "1rem"}}>
 				<CssBaseline />
 				<AppBarComponent title="TEAM COMBINER" />
 				<Combinations />
