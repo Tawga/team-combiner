@@ -9,10 +9,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { sortBy } from "lodash"
- 
-const TeamCard = ({ cap: teamCap, players, cmv }) => {
+import { sortBy } from "lodash";
+import { getCmvLeftColor } from "../utils/util"; // Import the utility function
 
+const TeamCard = ({ cap: teamCap, players, cmv }) => {
 	const cmvLeft = teamCap - cmv;
 
 	return (
@@ -21,8 +21,10 @@ const TeamCard = ({ cap: teamCap, players, cmv }) => {
 				<Table sx={{ minWidth: 100 }} size="small">
 					<TableHead>
 						<TableRow>
-							<TableCell sx={{fontWeight:"bold"}}>Name</TableCell>
-							<TableCell align="right" sx={{fontWeight:"bold"}}>CMV</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+							<TableCell align="right" sx={{ fontWeight: "bold" }}>
+								CMV
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -44,7 +46,11 @@ const TeamCard = ({ cap: teamCap, players, cmv }) => {
 							))}
 					</TableBody>
 					<TableHead>
-						<TableRow sx={{ backgroundColor: cmvLeft<=25 ? "#cfebcacc": "#fcf6a4cc" }}>
+						<TableRow
+							sx={{
+								backgroundColor: getCmvLeftColor(cmvLeft),
+							}}
+						>
 							<TableCell>CMV left:</TableCell>
 							<TableCell align="right">{cmvLeft}</TableCell>
 						</TableRow>
