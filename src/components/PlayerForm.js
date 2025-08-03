@@ -6,8 +6,10 @@ import {
 	Button,
 	Checkbox,
 	FormControlLabel,
+	Icon,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
+import AddIcon from "@mui/icons-material/Add";
 import classes from "./Combinations.module.css";
 
 const PlayerForm = ({ players, setPlayers }) => {
@@ -117,13 +119,12 @@ const PlayerForm = ({ players, setPlayers }) => {
 					})}
 					<Grid xs={6} md={4}>
 						<Button
-							variant="contained"
 							className="button add"
-							fullWidth
 							type="button"
 							onClick={() => addFormFields()}
+							sx={{ width: "100%", height: "100%" }}
 						>
-							Add New Player
+							<AddIcon fontSize="large" />
 						</Button>
 					</Grid>
 				</Grid>

@@ -14,20 +14,20 @@ import { fetchTierCaps } from "../utils/firebase";
 import classes from "./Combinations.module.css";
 import CopyTeamButton from "./CopyTeamButton";
 
-
 const Settings = ({ teamCap, setTeamCap, players }) => {
-	const [selectedTier, setSelectedTier] = useState(teamCap);
+	const [selectedTier, setSelectedTier] = useState();
 	const [custom, setCustom] = useState(false);
 	const [tierCaps, setTierCaps] = useState([]);
-	
-	useEffect(()=> {
+
+	useEffect(() => {
 		const getCaps = async () => {
 			const data = await fetchTierCaps();
 			setTierCaps(data);
+			setTeamCap(data[0]?.cap);
+			setSelectedTier(data[0]?.cap);
 		};
-
 		getCaps();
-	},[]);
+	}, [setTeamCap]);
 
 	const teamCapHandler = (event) => {
 		if (event.target.value >= 0) {
@@ -51,7 +51,7 @@ const Settings = ({ teamCap, setTeamCap, players }) => {
 				<InputLabel>Select Team Cap</InputLabel>
 				<Select
 					size="small"
-					value={selectedTier}
+					value={selectedTier || ""}
 					onChange={dropdownHandler}
 					input={<OutlinedInput label="Select Team Cap" />}
 				>

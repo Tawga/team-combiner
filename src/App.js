@@ -11,7 +11,7 @@ const router = createBrowserRouter([
 		element: (
 			<Container maxWidth="lg" sx={{marginBottom: "1rem"}}>
 				<CssBaseline />
-				<AppBarComponent title="TEAM COMBINER" />
+				<AppBarComponent title="ROSTER CALCULATOR" />
 				<Combinations />
 			</Container>
 		),
