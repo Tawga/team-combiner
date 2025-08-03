@@ -5,11 +5,12 @@ import {
 	Button,
 	Checkbox,
 	FormControlLabel,
+	Autocomplete,
 } from "@mui/material";
 
 // React.memo prevents this component from re-rendering if its props haven't changed.
 const PlayerCard = React.memo(
-	({ player, index, onPlayerUpdate, onPlayerRemove }) => {
+	({ player, index, allPlayers, onPlayerUpdate, onPlayerRemove }) => {
 		// Internal state for this card only. This makes typing feel instantaneous.
 		const [currentPlayer, setCurrentPlayer] = useState(player);
 
@@ -24,6 +25,21 @@ const PlayerCard = React.memo(
 				...prev,
 				[name]: name === "cmv" ? Number(value) : value,
 			}));
+		};
+
+		// This function is called when a player is selected from the autocomplete list
+		const handleAutocompleteChange = (event, selectedOption) => {
+			if (selectedOption) {
+				// When a player is selected, update both name and cmv
+				const updatedPlayer = {
+					...currentPlayer,
+					name: selectedOption.player_name,
+					cmv: selectedOption.cmv,
+				};
+				setCurrentPlayer(updatedPlayer);
+				// Immediately update the parent to reflect the change
+				onPlayerUpdate(index, updatedPlayer);
+			}
 		};
 
 		const toggleCheckbox = (name) => {
@@ -63,17 +79,31 @@ const PlayerCard = React.memo(
 					flexDirection: "column",
 				}}
 			>
-				<TextField
-					type="text"
-					name="name"
-					label="Name"
-					size="small"
-					margin="dense"
-					fullWidth
-					value={currentPlayer.name}
-					onChange={handleInputChange}
-					onBlur={handleBlur} // Update on blur
-					onKeyUp={handleKeyUp}
+				<Autocomplete
+					// The value is an object from the allPlayers list that matches the current player's name
+					value={
+						allPlayers.find((p) => p.player_name === currentPlayer.name) || null
+					}
+					onChange={handleAutocompleteChange}
+					options={allPlayers}
+					// Tell Autocomplete how to get the label for each option
+					getOptionLabel={(option) => option.player_name || ""}
+					// This helps React efficiently render the list
+					renderOption={(props, option) => (
+						<li {...props} key={option.id}>
+							{option.player_name}
+						</li>
+					)}
+					// This is the input field the user types into
+					renderInput={(params) => (
+						<TextField
+							{...params}
+							label="Name"
+							size="small"
+							margin="dense"
+							onBlur={handleBlur}
+						/>
+					)}
 				/>
 				<TextField
 					type="number"

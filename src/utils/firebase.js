@@ -22,3 +22,14 @@ export const fetchTierCaps = async () => {
     }));
     return tierCaps.sort((a,b) => a.cap - b.cap);
 }
+
+export const fetchAllPlayers = async () => {
+    const querySnapshot = await getDocs(collection(db, "players"));
+    const playersList = querySnapshot.docs.map(doc => ({
+        // The document ID might be useful as a key later
+        id: doc.id,
+        // Spread the rest of the document data (player_name, cmv, etc.)
+        ...doc.data()
+    }));
+    return playersList;
+};

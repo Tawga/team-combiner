@@ -1,11 +1,23 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Container, Card, Button } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import AddIcon from "@mui/icons-material/Add";
 import classes from "./Combinations.module.css";
 import PlayerCard from "./PlayerCard"; // <-- Import the new component
+import { fetchAllPlayers } from "../utils/firebase"; // Adjust the import path as necessary
 
 const PlayerForm = ({ players, setPlayers }) => {
+	// State to hold the list of all players from the database
+	const [allPlayers, setAllPlayers] = useState([]);
+
+	// Fetch all players from the database when the component mounts
+	useEffect(() => {
+		const getPlayers = async () => {
+			const playersFromDB = await fetchAllPlayers();
+			setAllPlayers(playersFromDB);
+		};
+		getPlayers();
+	}, []); // Empty dependency array ensures this runs only once
 	const addFormFields = useCallback(() => {
 		setPlayers((prev) => [
 			...prev,
@@ -44,6 +56,7 @@ const PlayerForm = ({ players, setPlayers }) => {
 							<PlayerCard
 								player={player}
 								index={index}
+								allPlayers={allPlayers}
 								onPlayerUpdate={updatePlayer}
 								onPlayerRemove={removeFormField}
 							/>

@@ -11,7 +11,7 @@ const router = createBrowserRouter([
 		element: (
 			<Container maxWidth="lg" sx={{marginBottom: "1rem"}}>
 				<CssBaseline />
-				<AppBarComponent title="ROSTER CALCULATOR" />
+				<AppBarComponent title="RSC ROSTER CALCULATOR" />
 				<Combinations />
 			</Container>
 		),
