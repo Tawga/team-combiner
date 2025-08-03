@@ -1,131 +1,71 @@
 import React, { useCallback } from "react";
-import {
-	Container,
-	Card,
-	TextField,
-	Button,
-	Checkbox,
-	FormControlLabel,
-	Icon,
-} from "@mui/material";
+import { Container, Card, Button } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import AddIcon from "@mui/icons-material/Add";
 import classes from "./Combinations.module.css";
+import PlayerCard from "./PlayerCard"; // <-- Import the new component
 
 const PlayerForm = ({ players, setPlayers }) => {
 	const addFormFields = useCallback(() => {
-		setPlayers([
-			...players,
+		setPlayers((prev) => [
+			...prev,
 			{
-				name: "Player " + (players.length + 1),
+				name: "Player " + (prev.length + 1),
 				cmv: 0,
 				lock: false,
 				highlight: false,
 			},
 		]);
-	}, [players, setPlayers]);
+	}, [setPlayers]);
 
 	const removeFormField = useCallback(
-		(index) => {
-			setPlayers(players.filter((_, i) => i !== index));
+		(indexToRemove) => {
+			setPlayers((prev) => prev.filter((_, i) => i !== indexToRemove));
 		},
-		[players, setPlayers]
+		[setPlayers]
 	);
 
-	const handleFieldChange = useCallback(
-		(index, event) => {
-			const { name, value } = event.target;
-			setPlayers(
-				players.map((player, i) =>
-					i === index
-						? { ...player, [name]: name === "cmv" ? Number(value) : value }
-						: player
-				)
+	// This function is now passed to each PlayerCard to handle updates on blur.
+	const updatePlayer = useCallback(
+		(index, updatedPlayerData) => {
+			setPlayers((prev) =>
+				prev.map((player, i) => (i === index ? updatedPlayerData : player))
 			);
 		},
-		[players, setPlayers]
-	);
-
-	const handleCheckboxToggle = useCallback(
-		(index, event) => {
-			const { name } = event.target;
-			setPlayers(
-				players.map((player, i) =>
-					i === index ? { ...player, [name]: !player[name] } : player
-				)
-			);
-		},
-		[players, setPlayers]
+		[setPlayers]
 	);
 
 	return (
 		<Container maxWidth="lg" className={classes.container}>
 			<form>
 				<Grid container spacing={2}>
-					{players.map((player, index) => {
-						return (
-							<Grid key={index} xs={6} md={4}>
-								<Card
-									sx={{
-										padding: 3,
-									}}
-								>
-									<TextField
-										type="text"
-										name="name"
-										label="Name"
-										size="small"
-										margin="dense"
-										fullWidth
-										value={player.name || ""}
-										onChange={(e) => handleFieldChange(index, e)}
-									/>
-									<TextField
-										type="number"
-										name="cmv"
-										label="CMV"
-										size="small"
-										margin="dense"
-										fullWidth
-										value={player.cmv || ""}
-										onChange={(e) => handleFieldChange(index, e)}
-									/>
-
-									<FormControlLabel
-										control={<Checkbox name="lock" checked={player.lock} />}
-										label="Lock to roster"
-										onClick={(e) => handleCheckboxToggle(index, e)}
-									/>
-
-									<FormControlLabel
-										control={
-											<Checkbox name="highlight" checked={player.highlight} />
-										}
-										label="Highlight"
-										onClick={(e) => handleCheckboxToggle(index, e)}
-									/>
-
-									<Button
-										type="button"
-										className="button remove"
-										fullWidth
-										onClick={() => removeFormField(index)}
-									>
-										Remove
-									</Button>
-								</Card>
-							</Grid>
-						);
-					})}
+					{players.map((player, index) => (
+						<Grid key={index} xs={6} md={4}>
+							<PlayerCard
+								player={player}
+								index={index}
+								onPlayerUpdate={updatePlayer}
+								onPlayerRemove={removeFormField}
+							/>
+						</Grid>
+					))}
 					<Grid xs={6} md={4}>
-						<Button
-							className="button add"
-							type="button"
-							onClick={() => addFormFields()}
-							sx={{ width: "100%", height: "100%" }}
+						<Card
+							sx={{
+								padding: 2,
+								height: "100%",
+								display: "flex",
+							}}
 						>
-							<AddIcon fontSize="large" />
-						</Button>
+							<Button
+								className="button add"
+								fullWidth
+								type="button"
+								onClick={addFormFields}
+							>
+								<AddIcon fontSize="large" />
+							</Button>
+						</Card>
 					</Grid>
 				</Grid>
 			</form>
