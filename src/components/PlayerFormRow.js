@@ -12,19 +12,19 @@ const PlayerFormRow = ({ player, index, onPlayerUpdate, onPlayerRemove }) => {
 	};
 
 	return (
-		<Grid item key={index} xs={12} md={12}>
+		<Grid key={index} xs={12} md={12}>
 			<Divider />
 			<Grid
 				container
 				sx={{ justifyContent: "space-between", alignItems: "center" }}
 			>
-				<Grid item xs={6} md={2}>
+				<Grid xs={6} md={2}>
 					<p>{player.name}</p>
 				</Grid>
-				<Grid item xs={6} md={2}>
+				<Grid xs={6} md={2}>
 					<p>{player.cmv}</p>
 				</Grid>
-				<Grid item xs={5} md={2}>
+				<Grid xs={5} md={2}>
 					<FormControlLabel
 						control={
 							<Checkbox
@@ -36,7 +36,7 @@ const PlayerFormRow = ({ player, index, onPlayerUpdate, onPlayerRemove }) => {
 						label="Lock to roster"
 					/>
 				</Grid>
-				<Grid item xs={5} md={2}>
+				<Grid xs={5} md={2}>
 					<FormControlLabel
 						control={
 							<Checkbox
@@ -48,7 +48,7 @@ const PlayerFormRow = ({ player, index, onPlayerUpdate, onPlayerRemove }) => {
 						label="Highlight"
 					/>
 				</Grid>
-				<Grid item xs={2} md={1}>
+				<Grid xs={2} md={1}>
 					<Button onClick={() => onPlayerRemove(index)}>
 						<DeleteIcon />
 					</Button>

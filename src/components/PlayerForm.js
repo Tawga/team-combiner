@@ -66,8 +66,7 @@ const PlayerForm = ({ players, allPlayers, setPlayers }) => {
 							// This helps React efficiently render the list
 							renderOption={(props, option) => (
 								<li {...props} key={option.id}>
-									{option.player_name}
-									{option.cmv}
+									{option.player_name} {option.cmv}
 								</li>
 							)}
 							fullWidth
@@ -102,6 +101,7 @@ const PlayerForm = ({ players, allPlayers, setPlayers }) => {
 				<Grid container>
 					{players.map((player, index) => (
 						<PlayerFormRow
+							key={index}
 							player={player}
 							index={index}
 							onPlayerUpdate={updatePlayer}
