@@ -8,7 +8,6 @@ import {
 	Autocomplete,
 } from "@mui/material";
 
-// React.memo prevents this component from re-rendering if its props haven't changed.
 const PlayerCard = React.memo(
 	({ player, index, allPlayers, onPlayerUpdate, onPlayerRemove }) => {
 		// Internal state for this card only. This makes typing feel instantaneous.

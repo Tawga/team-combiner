@@ -1,43 +1,31 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { Container, Card, Button } from "@mui/material";
+import React, { useCallback, useState } from "react";
+import {
+	Container,
+	Card,
+	Button,
+	TextField,
+	Autocomplete,
+} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import AddIcon from "@mui/icons-material/Add";
 import classes from "./Combinations.module.css";
-import PlayerCard from "./PlayerCard"; // <-- Import the new component
-import { fetchAllPlayers } from "../utils/firebase"; // Adjust the import path as necessary
+import PlayerFormRow from "./PlayerFormRow";
 
-const PlayerForm = ({ players, setPlayers }) => {
+const PlayerForm = ({ players, allPlayers, setPlayers }) => {
 	// State to hold the list of all players from the database
-	const [allPlayers, setAllPlayers] = useState([]);
+	const [newPlayer, setNewPlayer] = useState({});
 
-	// Fetch all players from the database when the component mounts
-	useEffect(() => {
-		const getPlayers = async () => {
-			const playersFromDB = await fetchAllPlayers();
-			setAllPlayers(playersFromDB);
-		};
-		getPlayers();
-	}, []); // Empty dependency array ensures this runs only once
-	const addFormFields = useCallback(() => {
-		setPlayers((prev) => [
-			...prev,
-			{
-				name: "Player " + (prev.length + 1),
-				cmv: 0,
-				lock: false,
-				highlight: false,
-			},
-		]);
-	}, [setPlayers]);
+	const addNewPlayer = () => {
+		setPlayers((prev) => [...prev, newPlayer]);
+	};
 
-	const removeFormField = useCallback(
+	const removePlayer = useCallback(
 		(indexToRemove) => {
 			setPlayers((prev) => prev.filter((_, i) => i !== indexToRemove));
 		},
 		[setPlayers]
 	);
 
-	// This function is now passed to each PlayerCard to handle updates on blur.
 	const updatePlayer = useCallback(
 		(index, updatedPlayerData) => {
 			setPlayers((prev) =>
@@ -47,41 +35,81 @@ const PlayerForm = ({ players, setPlayers }) => {
 		[setPlayers]
 	);
 
+	const handleNewPlayerChange = (event, value) => {
+		const updatedPlayer = {
+			name: value?.player_name,
+			cmv: value?.cmv,
+			lock: false,
+			highlight: false,
+		};
+		setNewPlayer(updatedPlayer);
+	};
+
 	return (
 		<Container maxWidth="lg" className={classes.container}>
-			<form>
-				<Grid container spacing={2}>
-					{players.map((player, index) => (
-						<Grid key={index} xs={6} md={4}>
-							<PlayerCard
-								player={player}
-								index={index}
-								allPlayers={allPlayers}
-								onPlayerUpdate={updatePlayer}
-								onPlayerRemove={removeFormField}
-							/>
-						</Grid>
-					))}
+			<Card
+				sx={{
+					padding: 2,
+				}}
+			>
+				<Grid container spacing={2} sx={{ marginBottom: "1rem" }}>
 					<Grid xs={6} md={4}>
-						<Card
-							sx={{
-								padding: 2,
-								height: "100%",
-								display: "flex",
-							}}
+						<Autocomplete
+							value={
+								allPlayers.find((p) => p.player_name === newPlayer?.name) ||
+								null
+							}
+							onChange={handleNewPlayerChange}
+							options={allPlayers}
+							// Tell Autocomplete how to get the label for each option
+							getOptionLabel={(option) => option.player_name || ""}
+							// This helps React efficiently render the list
+							renderOption={(props, option) => (
+								<li {...props} key={option.id}>
+									{option.player_name}
+									{option.cmv}
+								</li>
+							)}
+							fullWidth
+							renderInput={(params) => (
+								<TextField {...params} label="Name" size="small" fullWidth />
+							)}
+						/>
+					</Grid>
+					<Grid xs={6} md={4}>
+						<TextField
+							type="number"
+							name="cmv"
+							label="CMV"
+							size="small"
+							fullWidth
+							disabled
+							value={newPlayer?.cmv || ""}
+						/>
+					</Grid>
+					<Grid xs={6} md={4}>
+						<Button
+							type="button"
+							size="small"
+							className="button add"
+							fullWidth
+							onClick={addNewPlayer}
 						>
-							<Button
-								className="button add"
-								fullWidth
-								type="button"
-								onClick={addFormFields}
-							>
-								<AddIcon fontSize="large" />
-							</Button>
-						</Card>
+							<AddIcon fontSize="large" /> Add Player
+						</Button>
 					</Grid>
 				</Grid>
-			</form>
+				<Grid container>
+					{players.map((player, index) => (
+						<PlayerFormRow
+							player={player}
+							index={index}
+							onPlayerUpdate={updatePlayer}
+							onPlayerRemove={removePlayer}
+						/>
+					))}
+				</Grid>
+			</Card>
 		</Container>
 	);
 };

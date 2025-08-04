@@ -6,12 +6,23 @@ import PlayerForm from "./PlayerForm";
 import { sortBy } from "lodash";
 import { useLocation } from "react-router-dom";
 
+import { fetchAllPlayers } from "../utils/firebase";
+
 const Combinations = () => {
 	const rosterSize = 4;
 	const [teamCap, setTeamCap] = useState();
 	const [players, setPlayers] = useState([]);
+	const [allPlayers, setAllPlayers] = useState([]);
 	const [possibleRosters, setPossibleRosters] = useState([]);
 	const location = useLocation();
+
+	useEffect(() => {
+		const getPlayers = async () => {
+			const playersFromDB = await fetchAllPlayers();
+			setAllPlayers(playersFromDB);
+		};
+		getPlayers();
+	}, []);
 
 	// Generates all possible combinations of players
 	const generateCombinations = useCallback((arr, size) => {
@@ -105,7 +116,11 @@ const Combinations = () => {
 	return (
 		<>
 			<Settings teamCap={teamCap} setTeamCap={setTeamCap} players={players} />
-			<PlayerForm setPlayers={setPlayers} players={players} />
+			<PlayerForm
+				setPlayers={setPlayers}
+				allPlayers={allPlayers}
+				players={players}
+			/>
 			<Rosters possibleRosters={possibleRosters} teamCap={teamCap} />
 		</>
 	);

@@ -18,7 +18,10 @@ const TeamCard = ({ cap: teamCap, players, cmv }) => {
 	return (
 		<div className={classes.card}>
 			<TableContainer component={Paper}>
-				<Table sx={{ minWidth: 100 }} size="small">
+				<Table
+					sx={{ minWidth: 100, backgroundColor: getCmvLeftColor(cmvLeft) }}
+					size="small"
+				>
 					<TableHead>
 						<TableRow>
 							<TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
@@ -34,7 +37,7 @@ const TeamCard = ({ cap: teamCap, players, cmv }) => {
 								<TableRow
 									key={index}
 									sx={{
-										backgroundColor: player.highlight ? "#86d875cc" : null,
+										backgroundColor: player.highlight ? "#68aef0cc" : null,
 									}}
 								>
 									<TableCell component="th" scope="player">
@@ -46,13 +49,11 @@ const TeamCard = ({ cap: teamCap, players, cmv }) => {
 							))}
 					</TableBody>
 					<TableHead>
-						<TableRow
-							sx={{
-								backgroundColor: getCmvLeftColor(cmvLeft),
-							}}
-						>
-							<TableCell>CMV left:</TableCell>
-							<TableCell align="right">{cmvLeft}</TableCell>
+						<TableRow>
+							<TableCell sx={{ fontWeight: "bold" }}>CMV left:</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }} align="right">
+								{cmvLeft}
+							</TableCell>
 						</TableRow>
 					</TableHead>
 				</Table>
