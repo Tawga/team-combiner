@@ -12,11 +12,12 @@ import { fetchTierCaps } from "../utils/firebase";
 const Combinations = () => {
 	const rosterSize = 4;
 	const [teamCap, setTeamCap] = useState();
+	const [tierCaps, setTierCaps] = useState([]);
+
 	const [players, setPlayers] = useState([]);
 	const [allPlayers, setAllPlayers] = useState([]);
 	const [possibleRosters, setPossibleRosters] = useState([]);
-	const [tierCaps, setTierCaps] = useState([]);
-	const [selectedTier, setSelectedTier] = useState();
+
 	const location = useLocation();
 
 	useEffect(() => {
@@ -28,7 +29,6 @@ const Combinations = () => {
 			const data = await fetchTierCaps();
 			setTierCaps(data);
 			setTeamCap(data[0]?.cap);
-			setSelectedTier(data[0]?.cap);
 		};
 
 		getCaps();
@@ -130,8 +130,6 @@ const Combinations = () => {
 				teamCap={teamCap}
 				setTeamCap={setTeamCap}
 				players={players}
-				setSelectedTier={setSelectedTier}
-				selectedTier={selectedTier}
 				tierCaps={tierCaps}
 			/>
 			<PlayerForm

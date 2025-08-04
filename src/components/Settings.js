@@ -13,14 +13,7 @@ import {
 import classes from "./Combinations.module.css";
 import CopyTeamButton from "./CopyTeamButton";
 
-const Settings = ({
-	teamCap,
-	setTeamCap,
-	players,
-	setSelectedTier,
-	selectedTier,
-	tierCaps,
-}) => {
+const Settings = ({ teamCap, setTeamCap, players, tierCaps }) => {
 	const [custom, setCustom] = useState(false);
 
 	const teamCapHandler = (event) => {
@@ -36,7 +29,6 @@ const Settings = ({
 			setCustom(false);
 			setTeamCap(event.target.value);
 		}
-		setSelectedTier(event.target.value);
 	};
 
 	return (
@@ -45,7 +37,7 @@ const Settings = ({
 				<InputLabel>Select Tier</InputLabel>
 				<Select
 					size="small"
-					value={selectedTier || ""}
+					value={teamCap || ""}
 					onChange={dropdownHandler}
 					input={<OutlinedInput label="Select Tier" />}
 				>
