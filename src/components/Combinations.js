@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Settings from "./Settings.js";
 import Rosters from "./Rosters";
 import PlayerForm from "./PlayerForm";
 
-import { sortBy } from "lodash";
+import { sortBy as lodashSortBy } from "lodash";
 import { useLocation } from "react-router-dom";
 
 import { fetchAllPlayers } from "../utils/firebase";
@@ -15,9 +15,10 @@ const Combinations = () => {
 	const [tierCaps, setTierCaps] = useState([]);
 
 	const [players, setPlayers] = useState([]);
-	const [filteredPlayers, setFilteredPlayers] = useState([]);
 	const [allPlayers, setAllPlayers] = useState([]);
 	const [possibleRosters, setPossibleRosters] = useState([]);
+
+	const [sortBy, setSortBy] = useState("player_name");
 
 	const location = useLocation();
 
@@ -36,19 +37,26 @@ const Combinations = () => {
 		getPlayers();
 	}, []);
 
-	// This useEffect now handles the filtering based on the selected tier cap.
-	useEffect(() => {
+	const sortedAndFilteredPlayers = useMemo(() => {
 		const selectedTier = tierCaps.find((tier) => tier.cap === teamCap);
+		let playersToDisplay = allPlayers;
+
 		if (selectedTier) {
-			const playersForTier = allPlayers.filter(
+			playersToDisplay = allPlayers.filter(
 				(player) =>
 					player.lower_tier.toLowerCase() === selectedTier.id.toLowerCase()
 			);
-			setFilteredPlayers(playersForTier);
-		} else {
-			setFilteredPlayers(allPlayers);
 		}
-	}, [teamCap, allPlayers, tierCaps]);
+
+		const sortable = [...playersToDisplay];
+		sortable.sort((a, b) => {
+			if (sortBy === "cmv") {
+				return b.cmv - a.cmv;
+			}
+			return a.player_name.localeCompare(b.player_name);
+		});
+		return sortable;
+	}, [teamCap, allPlayers, tierCaps, sortBy]);
 
 	// Generates all possible combinations of players
 	const generateCombinations = useCallback((arr, size) => {
@@ -116,7 +124,7 @@ const Combinations = () => {
 		}));
 
 		// Sort the possible rosters by total CMV in descending order
-		setPossibleRosters(sortBy(possibleRosterData, "totalCmv").reverse());
+		setPossibleRosters(lodashSortBy(possibleRosterData, "totalCmv").reverse());
 	}, [
 		players,
 		teamCap,
@@ -146,10 +154,12 @@ const Combinations = () => {
 				setTeamCap={setTeamCap}
 				players={players}
 				tierCaps={tierCaps}
+				sortBy={sortBy}
+				setSortBy={setSortBy}
 			/>
 			<PlayerForm
 				setPlayers={setPlayers}
-				filteredPlayers={filteredPlayers}
+				filteredPlayers={sortedAndFilteredPlayers}
 				players={players}
 			/>
 			<Rosters possibleRosters={possibleRosters} teamCap={teamCap} />

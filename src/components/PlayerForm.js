@@ -5,6 +5,8 @@ import {
 	Button,
 	TextField,
 	Autocomplete,
+	Box,
+	Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import AddIcon from "@mui/icons-material/Add";
@@ -66,9 +68,19 @@ const PlayerForm = ({ players, filteredPlayers, setPlayers }) => {
 							getOptionLabel={(option) => option.player_name || ""}
 							// This helps React efficiently render the list
 							renderOption={(props, option) => (
-								<li {...props} key={option.id}>
-									{option.player_name} {option.cmv}
-								</li>
+								<Box
+									component="li"
+									sx={{ display: "flex", alignItems: "center", width: "100%" }}
+									{...props}
+									key={option.id}
+								>
+									<Typography variant="body1" sx={{ flexGrow: 1 }}>
+										{option.player_name}
+									</Typography>
+									<Typography variant="body2" color="text.secondary">
+										{option.cmv}
+									</Typography>
+								</Box>
 							)}
 							fullWidth
 							renderInput={(params) => (

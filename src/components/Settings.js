@@ -8,12 +8,24 @@ import {
 	MenuItem,
 	FormControl,
 	InputLabel,
+	Box,
+	Typography,
+	RadioGroup,
+	FormControlLabel,
+	Radio,
 } from "@mui/material";
 
 import classes from "./Combinations.module.css";
 import CopyTeamButton from "./CopyTeamButton";
 
-const Settings = ({ teamCap, setTeamCap, players, tierCaps }) => {
+const Settings = ({
+	teamCap,
+	setTeamCap,
+	players,
+	tierCaps,
+	sortBy,
+	setSortBy,
+}) => {
 	const [custom, setCustom] = useState(false);
 
 	const teamCapHandler = (event) => {
@@ -32,8 +44,16 @@ const Settings = ({ teamCap, setTeamCap, players, tierCaps }) => {
 	};
 
 	return (
-		<Container maxWidth="lg" className={classes["container-top"]}>
-			<FormControl sx={{ m: 1, width: 300 }}>
+		<Container
+			maxWidth="lg"
+			className={classes["container-top"]}
+			sx={{
+				display: "flex",
+				flexDirection: "row",
+				justifyContent: "space-between",
+			}}
+		>
+			<FormControl sx={{ m: 1, width: 250 }}>
 				<InputLabel>Select Tier</InputLabel>
 				<Select
 					size="small"
@@ -49,6 +69,34 @@ const Settings = ({ teamCap, setTeamCap, players, tierCaps }) => {
 					{/* <MenuItem value={"custom"}>Custom</MenuItem> */}
 				</Select>
 			</FormControl>
+			<Box sx={{ display: "flex", alignItems: "center" }}>
+				<Typography
+					variant="body2"
+					sx={{ mr: 2, fontWeight: 500, color: "text.secondary" }}
+				>
+					Sort Players By
+				</Typography>
+				<FormControl>
+					<RadioGroup
+						row
+						aria-labelledby="sort-by-label"
+						name="sort-by-group"
+						value={sortBy}
+						onChange={(e) => setSortBy(e.target.value)}
+					>
+						<FormControlLabel
+							value="player_name"
+							control={<Radio size="small" />}
+							label="Name"
+						/>
+						<FormControlLabel
+							value="cmv"
+							control={<Radio size="small" />}
+							label="CMV"
+						/>
+					</RadioGroup>
+				</FormControl>
+			</Box>
 
 			{custom && (
 				<TextField
