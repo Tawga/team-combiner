@@ -46,7 +46,7 @@ const Settings = ({ teamCap, setTeamCap, players, tierCaps }) => {
 							{_.startCase(tier.id)} - {tier.cap}
 						</MenuItem>
 					))}
-					<MenuItem value={"custom"}>Custom</MenuItem>
+					{/* <MenuItem value={"custom"}>Custom</MenuItem> */}
 				</Select>
 			</FormControl>
 

@@ -11,7 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import classes from "./Combinations.module.css";
 import PlayerFormRow from "./PlayerFormRow";
 
-const PlayerForm = ({ players, allPlayers, setPlayers }) => {
+const PlayerForm = ({ players, filteredPlayers, setPlayers }) => {
 	// State to hold the list of all players from the database
 	const [newPlayer, setNewPlayer] = useState({});
 
@@ -56,11 +56,12 @@ const PlayerForm = ({ players, allPlayers, setPlayers }) => {
 					<Grid xs={6} md={4}>
 						<Autocomplete
 							value={
-								allPlayers.find((p) => p.player_name === newPlayer?.name) ||
-								null
+								filteredPlayers.find(
+									(p) => p.player_name === newPlayer?.name
+								) || null
 							}
 							onChange={handleNewPlayerChange}
-							options={allPlayers}
+							options={filteredPlayers}
 							// Tell Autocomplete how to get the label for each option
 							getOptionLabel={(option) => option.player_name || ""}
 							// This helps React efficiently render the list

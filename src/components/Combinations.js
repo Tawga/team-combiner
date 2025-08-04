@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Settings from "./Settings.js";
 import Rosters from "./Rosters";
 import PlayerForm from "./PlayerForm";
@@ -15,6 +15,7 @@ const Combinations = () => {
 	const [tierCaps, setTierCaps] = useState([]);
 
 	const [players, setPlayers] = useState([]);
+	const [filteredPlayers, setFilteredPlayers] = useState([]);
 	const [allPlayers, setAllPlayers] = useState([]);
 	const [possibleRosters, setPossibleRosters] = useState([]);
 
@@ -34,6 +35,20 @@ const Combinations = () => {
 		getCaps();
 		getPlayers();
 	}, []);
+
+	// This useEffect now handles the filtering based on the selected tier cap.
+	useEffect(() => {
+		const selectedTier = tierCaps.find((tier) => tier.cap === teamCap);
+		if (selectedTier) {
+			const playersForTier = allPlayers.filter(
+				(player) =>
+					player.lower_tier.toLowerCase() === selectedTier.id.toLowerCase()
+			);
+			setFilteredPlayers(playersForTier);
+		} else {
+			setFilteredPlayers(allPlayers);
+		}
+	}, [teamCap, allPlayers, tierCaps]);
 
 	// Generates all possible combinations of players
 	const generateCombinations = useCallback((arr, size) => {
@@ -134,7 +149,7 @@ const Combinations = () => {
 			/>
 			<PlayerForm
 				setPlayers={setPlayers}
-				allPlayers={allPlayers}
+				filteredPlayers={filteredPlayers}
 				players={players}
 			/>
 			<Rosters possibleRosters={possibleRosters} teamCap={teamCap} />
