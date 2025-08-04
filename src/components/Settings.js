@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import _ from "lodash";
 import {
 	Container,
@@ -10,24 +10,18 @@ import {
 	InputLabel,
 } from "@mui/material";
 
-import { fetchTierCaps } from "../utils/firebase";
 import classes from "./Combinations.module.css";
 import CopyTeamButton from "./CopyTeamButton";
 
-const Settings = ({ teamCap, setTeamCap, players }) => {
-	const [selectedTier, setSelectedTier] = useState();
+const Settings = ({
+	teamCap,
+	setTeamCap,
+	players,
+	setSelectedTier,
+	selectedTier,
+	tierCaps,
+}) => {
 	const [custom, setCustom] = useState(false);
-	const [tierCaps, setTierCaps] = useState([]);
-
-	useEffect(() => {
-		const getCaps = async () => {
-			const data = await fetchTierCaps();
-			setTierCaps(data);
-			setTeamCap(data[0]?.cap);
-			setSelectedTier(data[0]?.cap);
-		};
-		getCaps();
-	}, [setTeamCap]);
 
 	const teamCapHandler = (event) => {
 		if (event.target.value >= 0) {
