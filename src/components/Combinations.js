@@ -24,13 +24,56 @@ const Combinations = () => {
 
 	useEffect(() => {
 		const getPlayers = async () => {
-			const playersFromDB = await fetchAllPlayers();
-			setAllPlayers(playersFromDB);
+			const cachedPlayersJSON = localStorage.getItem("allPlayers");
+			if (cachedPlayersJSON) {
+				const cachedPlayers = JSON.parse(cachedPlayersJSON);
+				if (new Date().getTime() < cachedPlayers.expiry) {
+					setAllPlayers(cachedPlayers.data);
+					console.log("Using cached players data");
+				} else {
+					console.log("Cached players data expired");
+				}
+			} else {
+				console.log("Fetching players from database");
+				const playersFromDB = await fetchAllPlayers();
+				const expirationTime =
+					new Date().getTime() + 4 * 7 * 24 * 60 * 60 * 1000;
+				const itemToCache = {
+					data: playersFromDB,
+					expiry: expirationTime,
+				};
+				console.log("Caching players data");
+				localStorage.setItem("allPlayers", JSON.stringify(itemToCache));
+				setAllPlayers(playersFromDB);
+			}
 		};
+
 		const getCaps = async () => {
-			const data = await fetchTierCaps();
-			setTierCaps(data);
-			setTeamCap(data[0]?.cap);
+			const cachedTierCapsJSON = localStorage.getItem("tierCaps");
+			if (cachedTierCapsJSON) {
+				const cachedTierCaps = JSON.parse(cachedTierCapsJSON);
+				if (new Date().getTime() < cachedTierCaps.expiry) {
+					const caps = cachedTierCaps.data;
+					setTierCaps(caps);
+					setTeamCap(caps[0]?.cap);
+					console.log("Using cached tier caps data");
+				} else {
+					console.log("Cached tier caps data expired");
+				}
+			} else {
+				console.log("Fetching tier caps from database");
+				const data = await fetchTierCaps();
+				const expirationTime =
+					new Date().getTime() + 4 * 7 * 24 * 60 * 60 * 1000;
+				const itemToCache = {
+					data: data,
+					expiry: expirationTime,
+				};
+				localStorage.setItem("tierCaps", JSON.stringify(itemToCache));
+				setTierCaps(data);
+				setTeamCap(data[0]?.cap);
+				console.log("Caching tier caps data");
+			}
 		};
 
 		getCaps();
