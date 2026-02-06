@@ -23,11 +23,15 @@ const Combinations = () => {
 	const location = useLocation();
 
 	useEffect(() => {
+		// Check if the page was reloaded (hard refresh)
+		const isReload =
+			window.performance.getEntriesByType("navigation")[0]?.type === "reload";
+
 		const getPlayers = async () => {
 			const cachedPlayersJSON = localStorage.getItem("allPlayers");
 			let validCacheFound = false;
 
-			if (cachedPlayersJSON) {
+			if (cachedPlayersJSON && !isReload) {
 				const cachedPlayers = JSON.parse(cachedPlayersJSON);
 				if (new Date().getTime() < cachedPlayers.expiry) {
 					setAllPlayers(cachedPlayers.data);
@@ -57,7 +61,7 @@ const Combinations = () => {
 			const cachedTierCapsJSON = localStorage.getItem("tierCaps");
 			let validCacheFound = false;
 
-			if (cachedTierCapsJSON) {
+			if (cachedTierCapsJSON && !isReload) {
 				const cachedTierCaps = JSON.parse(cachedTierCapsJSON);
 				if (new Date().getTime() < cachedTierCaps.expiry) {
 					const caps = cachedTierCaps.data;
