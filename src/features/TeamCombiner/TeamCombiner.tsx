@@ -8,6 +8,15 @@ import { useSearchParams } from "react-router-dom";
 import { useRosterData } from "../../hooks/useRosterData";
 import { calculatePossibleRosters } from "../../utils/rosterUtils";
 import { Player, Roster, TierCap } from "@/types";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const Combinations = () => {
 	const { allPlayers, tierCaps } = useRosterData();
@@ -16,6 +25,8 @@ const Combinations = () => {
 	const [possibleRosters, setPossibleRosters] = useState<Roster[]>([]);
 	const [sortBy, setSortBy] = useState<string>("player_name");
 	const [searchParams, setSearchParams] = useSearchParams();
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [pendingTier, setPendingTier] = useState<TierCap | undefined>();
 
 	// Initialize selectedTier when tierCaps are loaded
 	useEffect(() => {
@@ -177,11 +188,37 @@ const Combinations = () => {
 		}
 	}, [players, setSearchParams, searchParams, allPlayers.length]);
 
+	const handleTierChange = (tier: TierCap) => {
+		if (players.length > 0) {
+			setPendingTier(tier);
+			setIsDialogOpen(true);
+		} else {
+			setSelectedTier(tier);
+		}
+	};
+
+	const confirmClearPlayers = () => {
+		setPlayers([]);
+		if (pendingTier) {
+			setSelectedTier(pendingTier);
+		}
+		setIsDialogOpen(false);
+		setPendingTier(undefined);
+	};
+
+	const keepPlayers = () => {
+		if (pendingTier) {
+			setSelectedTier(pendingTier);
+		}
+		setIsDialogOpen(false);
+		setPendingTier(undefined);
+	};
+
 	return (
 		<>
 			<Settings
 				selectedTier={selectedTier}
-				setSelectedTier={setSelectedTier}
+				setSelectedTier={handleTierChange}
 				tiers={tierCaps}
 				sortBy={sortBy}
 				setSortBy={setSortBy}
@@ -195,6 +232,29 @@ const Combinations = () => {
 				possibleRosters={possibleRosters}
 				teamCap={selectedTier?.max_cap}
 			/>
+
+			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Switching Tiers</DialogTitle>
+						<DialogDescription>
+							You have players selected. Do you want to clear them or keep them
+							for the new tier?
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+							Cancel
+						</Button>
+						<Button variant="secondary" onClick={keepPlayers}>
+							Keep Players
+						</Button>
+						<Button variant="destructive" onClick={confirmClearPlayers}>
+							Clear Players
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 };
