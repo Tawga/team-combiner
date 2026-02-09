@@ -1,6 +1,6 @@
 {
 	"name": "team-combiner",
-	"version": "2.3.1",
+	"version": "2.4.0",
 	"private": true,
 	"dependencies": {
 		"@emotion/react": "^11.10.6",
