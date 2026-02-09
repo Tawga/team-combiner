@@ -231,6 +231,7 @@ const Combinations = () => {
 			<Rosters
 				possibleRosters={possibleRosters}
 				teamCap={selectedTier?.max_cap}
+				minCap={selectedTier?.min_cap}
 			/>
 
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

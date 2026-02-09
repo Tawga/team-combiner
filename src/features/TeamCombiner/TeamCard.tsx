@@ -1,14 +1,7 @@
 import React from "react";
 
 import { Lock } from "lucide-react";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
+
 import { Card, CardContent } from "@/components/ui/card";
 
 import { sortBy } from "lodash";
@@ -17,69 +10,66 @@ import { Player } from "@/types/index";
 
 interface TeamCardProps {
 	cap: number | undefined;
+	minCap: number | undefined;
 	players: Player[];
 	cmv: number;
 }
 
-const TeamCard: React.FC<TeamCardProps> = ({ cap: teamCap, players, cmv }) => {
+const TeamCard: React.FC<TeamCardProps> = ({
+	cap: teamCap,
+	minCap,
+	cmv,
+	players,
+}) => {
 	const cmvLeft = teamCap ? teamCap - cmv : undefined;
 
+	let borderColor = "hsl(var(--border))"; // Default border color
+	let textColor = "hsl(var(--primary-foreground))"; // Default text color for the header
+
+	// Calculate color based on percentage of available cap used
+	if (
+		teamCap !== undefined &&
+		minCap !== undefined &&
+		cmvLeft !== undefined &&
+		teamCap !== minCap
+	) {
+		const maxPossibleUsage = teamCap - minCap;
+		// 0 means we are at min cap (fraction approaches 1), maxPossibleUsage means we are at max cap (fraction approaches 0)
+		const colors = getCmvLeftColor(cmvLeft, maxPossibleUsage);
+		borderColor = colors.border;
+		textColor = colors.text;
+	}
+
 	return (
-		<Card className="overflow-hidden">
+		<Card className=" border-4 shadow-sm" style={{ borderColor: borderColor }}>
+			<div
+				className="w-full py-2 text-center font-bold"
+				style={{ backgroundColor: borderColor, color: textColor }}
+			>
+				CMV left ({cmvLeft})
+			</div>
 			<CardContent className="p-0">
-				<div
-					style={{ backgroundColor: getCmvLeftColor(cmvLeft) }}
-					className="p-1"
-				>
-					<Table>
-						<TableHeader>
-							<TableRow className="hover:bg-transparent">
-								<TableHead className="w-[70%] font-bold text-black">
-									Name
-								</TableHead>
-								<TableHead className="text-right font-bold text-black">
-									CMV
-								</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{sortBy(players, ["cmv"])
-								.reverse()
-								.map((player: Player, index: number) => (
-									<TableRow
-										key={index}
-										className={
-											player.highlight
-												? "bg-blue-200/80 hover:bg-blue-200/90"
-												: "hover:bg-white/50"
-										}
-										style={{
-											backgroundColor: player.highlight
-												? "#68aef0cc"
-												: undefined,
-										}}
-									>
-										<TableCell className="font-medium">
-											<div className="flex items-center gap-1">
-												{player.name}
-												{player.lock && <Lock className="h-3 w-3" />}
-											</div>
-										</TableCell>
-										<TableCell className="text-right">{player.cmv}</TableCell>
-									</TableRow>
-								))}
-						</TableBody>
-						<TableHeader>
-							<TableRow className="hover:bg-transparent border-t-2 border-black/10">
-								<TableCell className="font-bold text-black">
-									CMV left:
-								</TableCell>
-								<TableCell className="text-right font-bold text-black">
-									{cmvLeft}
-								</TableCell>
-							</TableRow>
-						</TableHeader>
-					</Table>
+				<div className="grid grid-cols-2 divide-x divide-y border-b">
+					{sortBy(players, ["cmv"])
+						.reverse()
+						.map((player: Player, index: number) => (
+							<div
+								key={index}
+								className={`flex flex-col items-center justify-center p-3 text-center h-24 ${
+									player.highlight
+										? "bg-blue-100/50 hover:bg-blue-100/60 dark:bg-blue-900/20"
+										: "hover:bg-muted/50"
+								}`}
+							>
+								<div className="font-semibold text-lg leading-tight mb-1 ">
+									{player.name}
+								</div>
+								<div className="text-muted-foreground  flex items-center justify-center gap-1">
+									{player.cmv}
+									{player.lock && <Lock className="h-3 w-3" />}
+								</div>
+							</div>
+						))}
 				</div>
 			</CardContent>
 		</Card>

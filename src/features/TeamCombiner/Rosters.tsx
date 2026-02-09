@@ -11,9 +11,14 @@ import {
 interface RostersProps {
 	possibleRosters: Roster[];
 	teamCap: number | undefined;
+	minCap: number | undefined;
 }
 
-const Rosters: React.FC<RostersProps> = ({ possibleRosters, teamCap }) => {
+const Rosters: React.FC<RostersProps> = ({
+	possibleRosters,
+	teamCap,
+	minCap,
+}) => {
 	return (
 		<Card className="w-full">
 			<CardHeader>
@@ -27,6 +32,7 @@ const Rosters: React.FC<RostersProps> = ({ possibleRosters, teamCap }) => {
 						<div key={index}>
 							<TeamCard
 								cap={teamCap}
+								minCap={minCap}
 								players={team.players}
 								cmv={team.totalCmv}
 							/>
