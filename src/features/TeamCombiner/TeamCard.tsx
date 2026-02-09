@@ -43,7 +43,7 @@ const TeamCard: React.FC<TeamCardProps> = ({
 	return (
 		<Card className=" border-4 shadow-sm" style={{ borderColor: borderColor }}>
 			<div
-				className="w-full py-2 text-center font-bold"
+				className="w-full py-2 text-center font-semibold"
 				style={{ backgroundColor: borderColor, color: textColor }}
 			>
 				CMV left ({cmvLeft})
@@ -55,8 +55,7 @@ const TeamCard: React.FC<TeamCardProps> = ({
 						.map((player: Player, index: number) => (
 							<div
 								key={index}
-								className={`flex flex-col items-center justify-center p-3 text-center h-24 ${
-									player.highlight
+								className={`flex flex-col items-center justify-center p-2 text-center h-20
 										? "bg-blue-100/50 hover:bg-blue-100/60 dark:bg-blue-900/20"
 										: "hover:bg-muted/50"
 								}`}
