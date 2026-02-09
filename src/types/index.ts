@@ -25,3 +25,4 @@ export interface TierCap {
     min_cap: number;
     max_cap: number;
 }
+

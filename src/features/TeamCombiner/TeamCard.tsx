@@ -69,7 +69,6 @@ const TeamCard: React.FC<TeamCardProps> = ({ cap: teamCap, players, cmv }) => {
 									</TableRow>
 								))}
 						</TableBody>
-						{/* Footer-like row for CMV left */}
 						<TableHeader>
 							<TableRow className="hover:bg-transparent border-t-2 border-black/10">
 								<TableCell className="font-bold text-black">

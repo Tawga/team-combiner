@@ -1,9 +1,9 @@
 import React from "react";
-import { Checkbox } from "../../../components/ui/checkbox";
-import { Button } from "../../../components/ui/button";
-import { Label } from "../../../components/ui/label";
+import { Checkbox } from "../../components/ui/checkbox";
+import { Button } from "../../components/ui/button";
+import { Label } from "../../components/ui/label";
 import { Trash } from "lucide-react";
-import { Player } from "../../../types/index";
+import { Player } from "../../types/index";
 
 interface PlayerFormRowProps {
 	player: Player;

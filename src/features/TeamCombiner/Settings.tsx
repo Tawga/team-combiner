@@ -12,22 +12,25 @@ import { Label } from "@/components/ui/label";
 import { TierCap } from "@/types/index";
 
 interface SettingsProps {
-	teamCap: number | undefined;
-	setTeamCap: (cap: number) => void;
-	tierCaps: TierCap[];
+	selectedTier: TierCap | undefined;
+	setSelectedTier: (tier: TierCap) => void;
+	tiers: TierCap[];
 	sortBy: string;
 	setSortBy: (sortBy: string) => void;
 }
 
 const Settings: React.FC<SettingsProps> = ({
-	teamCap,
-	setTeamCap,
-	tierCaps,
+	selectedTier,
+	setSelectedTier,
+	tiers,
 	sortBy,
 	setSortBy,
 }) => {
 	const onSelectChange = (value: string) => {
-		setTeamCap(Number(value));
+		const tier = tiers.find((t) => t.id === value);
+		if (tier) {
+			setSelectedTier(tier);
+		}
 	};
 
 	return (
@@ -36,14 +39,14 @@ const Settings: React.FC<SettingsProps> = ({
 				<Label htmlFor="tier-select">Select Tier</Label>
 				<Select
 					onValueChange={onSelectChange}
-					value={teamCap ? teamCap.toString() : ""}
+					value={selectedTier ? selectedTier.id : ""}
 				>
 					<SelectTrigger className="w-[200px]" id="tier-select">
 						<SelectValue placeholder="Select Tier" />
 					</SelectTrigger>
 					<SelectContent>
-						{tierCaps.map((tier) => (
-							<SelectItem key={tier.id} value={tier.max_cap.toString()}>
+						{tiers.map((tier) => (
+							<SelectItem key={tier.id} value={tier.id}>
 								{_.startCase(tier.id)} ({tier.min_cap} - {tier.max_cap})
 							</SelectItem>
 						))}

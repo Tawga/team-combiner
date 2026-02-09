@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Combinations from "./features/TeamCombiner/Combinations";
+import Combinations from "./features/TeamCombiner/TeamCombiner";
 import AppBarComponent from "./components/AppBarComponent";
 import HelpSection from "./components/HelpSection";
 

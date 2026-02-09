@@ -1,12 +1,12 @@
 import React from "react";
 import TeamCard from "./TeamCard";
-import { Roster } from "../../../types/index";
+import { Roster } from "../../types/index";
 import {
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from "../../../components/ui/card";
+} from "../../components/ui/card";
 
 interface RostersProps {
 	possibleRosters: Roster[];
