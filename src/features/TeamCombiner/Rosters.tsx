@@ -17,7 +17,9 @@ const Rosters: React.FC<RostersProps> = ({ possibleRosters, teamCap }) => {
 	return (
 		<Card className="w-full">
 			<CardHeader>
-				<CardTitle>Possible rosters | {possibleRosters.length}</CardTitle>
+				<CardTitle className="text-md">
+					Possible rosters ({possibleRosters.length})
+				</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
