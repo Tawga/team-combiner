@@ -56,9 +56,11 @@ const TeamCard: React.FC<TeamCardProps> = ({
 							<div
 								key={index}
 								className={`flex flex-col items-center justify-center p-2 text-center h-20
-										? "bg-blue-100/50 hover:bg-blue-100/60 dark:bg-blue-900/20"
-										: "hover:bg-muted/50"
-								}`}
+									${
+										player.highlight
+											? "bg-blue-100/50 hover:bg-blue-100/60 dark:bg-blue-900/20"
+											: "hover:bg-muted/50"
+									}`}
 							>
 								<div className="font-semibold text-lg leading-tight mb-1 ">
 									{player.name}
