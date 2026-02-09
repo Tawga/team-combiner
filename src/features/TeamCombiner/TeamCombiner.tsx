@@ -33,7 +33,7 @@ const Combinations = () => {
 				setSelectedTier(tierCaps[0]);
 			}
 		}
-	}, [tierCaps, searchParams, selectedTier]);
+	}, [tierCaps, searchParams]);
 
 	const sortedAndFilteredPlayers = useMemo(() => {
 		let playersToDisplay = allPlayers;
