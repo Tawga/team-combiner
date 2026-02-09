@@ -1,11 +1,15 @@
 import React from "react";
 import { Beer, ExternalLink } from "lucide-react";
+import packageJson from "../../package.json";
 
 const FooterComponent: React.FC = () => {
 	return (
 		<footer className="mt-auto bg-gray-100 dark:bg-gray-800 py-6 text-sm text-gray-600 dark:text-gray-400">
 			<div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 md:flex-row">
 				<div className="flex items-center gap-2">
+					<span className="text-xs text-gray-500 dark:text-gray-500 font-mono">
+						v{packageJson.version}
+					</span>
 					<span>Created by Tawga</span>
 					<span
 						className="flex items-center justify-center p-1 rounded "
