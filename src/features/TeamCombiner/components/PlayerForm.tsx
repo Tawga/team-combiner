@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { Card, CardContent } from "../../../components/ui/card";
-import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
 	Command,
 	CommandEmpty,
@@ -9,23 +9,23 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "../../../components/ui/command";
+} from "@/components/ui/command";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "../../../components/ui/popover";
+} from "@/components/ui/popover";
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from "../../../components/ui/collapsible";
+} from "@/components/ui/collapsible";
 
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
-import { cn } from "../../../lib/utils";
+import { cn } from "@/lib/utils";
 
 import PlayerFormRow from "./PlayerFormRow";
-import { Player, DatabasePlayer } from "../../../types/index";
+import { Player, DatabasePlayer } from "@/types/index";
 
 interface PlayerFormProps {
 	players: Player[];

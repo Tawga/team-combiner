@@ -5,7 +5,10 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export const getCmvLeftColor = (cmvLeft: number): string => {
+export const getCmvLeftColor = (cmvLeft: number | undefined): string => {
+    if (cmvLeft === undefined) {
+        return "";
+    }
     // Define our key colors in [R, G, B] format
     const green = [134, 216, 117]; // A nice green
     const yellow = [252, 246, 164]; // The yellow from your original code

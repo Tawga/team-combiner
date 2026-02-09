@@ -10,7 +10,7 @@ import {
 
 interface RostersProps {
 	possibleRosters: Roster[];
-	teamCap: number;
+	teamCap: number | undefined;
 }
 
 const Rosters: React.FC<RostersProps> = ({ possibleRosters, teamCap }) => {

@@ -16,13 +16,13 @@ import { getCmvLeftColor } from "@/lib/utils";
 import { Player } from "@/types/index";
 
 interface TeamCardProps {
-	cap: number;
+	cap: number | undefined;
 	players: Player[];
 	cmv: number;
 }
 
 const TeamCard: React.FC<TeamCardProps> = ({ cap: teamCap, players, cmv }) => {
-	const cmvLeft = teamCap - cmv;
+	const cmvLeft = teamCap ? teamCap - cmv : undefined;
 
 	return (
 		<Card className="overflow-hidden">

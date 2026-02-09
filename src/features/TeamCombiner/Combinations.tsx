@@ -12,19 +12,16 @@ import {
 	filterAllowedRosters,
 	filterLockedRosters,
 } from "../../utils/rosterUtils";
-import { Player, DatabasePlayer, Roster, TierCap } from "../../types";
+import { Player, DatabasePlayer, Roster, TierCap } from "@/types";
 
 const Combinations = () => {
 	const rosterSize = 4;
-	const [teamCap, setTeamCap] = useState<number>(0); // Initialize with 0 or undefined, logic suggests it gets set later
+	const [teamCap, setTeamCap] = useState<number | undefined>(); // Initialize with 0 or undefined, logic suggests it gets set later
 	const [tierCaps, setTierCaps] = useState<TierCap[]>([]);
-
 	const [players, setPlayers] = useState<Player[]>([]);
 	const [allPlayers, setAllPlayers] = useState<DatabasePlayer[]>([]);
 	const [possibleRosters, setPossibleRosters] = useState<Roster[]>([]);
-
 	const [sortBy, setSortBy] = useState<string>("player_name");
-
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	useEffect(() => {
@@ -76,7 +73,7 @@ const Combinations = () => {
 					// Standardize teamCap initialization if not set (optional, handled in Settings/URL)
 					const hasTierParam = searchParams.get("tier");
 					if (teamCap === 0 && caps.length > 0 && !hasTierParam) {
-						setTeamCap(caps[0]?.max_cap);
+						setTeamCap(caps[0]?.max_cap || 0);
 					}
 					console.log("Using cached tier caps data");
 					validCacheFound = true;
@@ -98,7 +95,7 @@ const Combinations = () => {
 					localStorage.setItem("tierCaps", JSON.stringify(itemToCache));
 					setTierCaps(data);
 					if (teamCap === 0 && data.length > 0) {
-						setTeamCap(data[0]?.max_cap);
+						setTeamCap(data[0]?.max_cap || 0);
 					}
 					console.log("Caching tier caps data");
 				} catch (error) {
@@ -241,7 +238,7 @@ const Combinations = () => {
 
 	// Sync state to URL (Tier)
 	useEffect(() => {
-		if (teamCap > 0 && tierCaps.length > 0) {
+		if (teamCap && teamCap > 0 && tierCaps.length > 0) {
 			const selectedTier = tierCaps.find((t) => t.max_cap === teamCap);
 			if (selectedTier) {
 				const currentTierParam = searchParams.get("tier");
@@ -294,7 +291,6 @@ const Combinations = () => {
 			<Settings
 				teamCap={teamCap}
 				setTeamCap={setTeamCap}
-				players={players}
 				tierCaps={tierCaps}
 				sortBy={sortBy}
 				setSortBy={setSortBy}

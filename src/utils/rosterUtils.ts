@@ -38,8 +38,12 @@ export const filterLockedRosters = (
 // Filters out rosters that exceed the team cap
 export const filterAllowedRosters = (
     rosters: Player[][],
-    cap: number
+    cap: number | undefined
 ): Player[][] => {
+    if (cap === undefined) {
+        return rosters;
+    }
+
     return rosters.filter((roster) => {
         const totalCmv = roster.reduce((acc, player) => acc + player.cmv, 0);
         return totalCmv <= cap;

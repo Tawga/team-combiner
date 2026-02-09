@@ -1,24 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import _ from "lodash";
-
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../../components/ui/select";
-import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
-import { Label } from "../../../components/ui/label";
-import { Input } from "../../../components/ui/input";
-
-import CopyTeamButton from "./CopyTeamButton";
-import { Player, TierCap } from "../../../types/index";
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { TierCap } from "@/types/index";
 
 interface SettingsProps {
-	teamCap: number;
+	teamCap: number | undefined;
 	setTeamCap: (cap: number) => void;
-	players: Player[];
 	tierCaps: TierCap[];
 	sortBy: string;
 	setSortBy: (sortBy: string) => void;
@@ -27,28 +22,12 @@ interface SettingsProps {
 const Settings: React.FC<SettingsProps> = ({
 	teamCap,
 	setTeamCap,
-	players,
 	tierCaps,
 	sortBy,
 	setSortBy,
 }) => {
-	const [custom, setCustom] = useState(false);
-
-	const teamCapHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const val = Number(event.target.value);
-		if (val >= 0) {
-			setTeamCap(val);
-		}
-	};
-
 	const onSelectChange = (value: string) => {
-		if (value === "custom") {
-			setCustom(true);
-			// Logic for custom logic can be added here if uncommented
-		} else {
-			setCustom(false);
-			setTeamCap(Number(value));
-		}
+		setTeamCap(Number(value));
 	};
 
 	return (
@@ -57,7 +36,7 @@ const Settings: React.FC<SettingsProps> = ({
 				<Label htmlFor="tier-select">Select Tier</Label>
 				<Select
 					onValueChange={onSelectChange}
-					value={custom ? "custom" : teamCap ? teamCap.toString() : ""}
+					value={teamCap ? teamCap.toString() : ""}
 				>
 					<SelectTrigger className="w-[200px]" id="tier-select">
 						<SelectValue placeholder="Select Tier" />
@@ -65,10 +44,9 @@ const Settings: React.FC<SettingsProps> = ({
 					<SelectContent>
 						{tierCaps.map((tier) => (
 							<SelectItem key={tier.id} value={tier.max_cap.toString()}>
-								{_.startCase(tier.id)} ({tier.min_cap}-{tier.max_cap})
+								{_.startCase(tier.id)} ({tier.min_cap} - {tier.max_cap})
 							</SelectItem>
 						))}
-						{/* <SelectItem value="custom">Custom</SelectItem> */}
 					</SelectContent>
 				</Select>
 			</div>
@@ -92,20 +70,6 @@ const Settings: React.FC<SettingsProps> = ({
 					</div>
 				</RadioGroup>
 			</div>
-
-			{custom && (
-				<div className="flex items-center gap-2">
-					<Label htmlFor="custom-cap">Custom Cap</Label>
-					<Input
-						id="custom-cap"
-						type="number"
-						value={teamCap}
-						onChange={teamCapHandler}
-						className="w-24"
-					/>
-				</div>
-			)}
-			<CopyTeamButton players={players} />
 		</div>
 	);
 };
