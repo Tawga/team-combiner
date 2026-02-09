@@ -8,12 +8,12 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "../../../components/ui/table";
-import { Card, CardContent } from "../../../components/ui/card";
+} from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
 
 import { sortBy } from "lodash";
-import { getCmvLeftColor } from "../../../utils/util";
-import { Player } from "../../../types/index";
+import { getCmvLeftColor } from "@/lib/utils";
+import { Player } from "@/types/index";
 
 interface TeamCardProps {
 	cap: number;
