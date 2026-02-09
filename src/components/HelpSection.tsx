@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 const HelpSection: React.FC = () => {
 	return (
-		<Card className="mb-6">
+		<Card className="mt-6">
 			<CardHeader>
 				<CardTitle className="text-xl">How to use Team Combiner</CardTitle>
 			</CardHeader>

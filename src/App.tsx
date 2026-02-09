@@ -10,8 +10,8 @@ const router = createBrowserRouter([
 			<div className="min-h-screen bg-gray-50 pb-10">
 				<AppBarComponent title="Team Combiner" />
 				<div className="container mx-auto px-4 py-8 max-w-7xl">
-					<HelpSection />
 					<Combinations />
+					<HelpSection />
 				</div>
 			</div>
 		),
