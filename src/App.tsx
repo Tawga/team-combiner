@@ -1,22 +1,37 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+	createBrowserRouter,
+	RouterProvider,
+	Navigate,
+} from "react-router-dom";
 import Combinations from "./features/TeamCombiner/TeamCombiner";
-import AppBarComponent from "./components/AppBarComponent";
+import RosterLayout from "./layouts/RosterLayout";
+import Dashboard from "./pages/Dashboard";
+import RollingLineup from "./features/RollingLineup/RollingLineup";
 import HelpSection from "./components/HelpSection";
-import FooterComponent from "./components/FooterComponent";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: (
-			<div className="flex min-h-screen flex-col bg-gray-50">
-				<AppBarComponent title="Team Combiner" />
-				<div className="container mx-auto px-4 py-8 max-w-7xl flex-grow">
-					<Combinations />
-					<HelpSection />
-				</div>
-				<FooterComponent />
-			</div>
-		),
+		element: <RosterLayout />,
+		children: [
+			{
+				index: true,
+				element: <Dashboard />,
+			},
+			{
+				path: "combiner",
+				element: (
+					<>
+						<Combinations />
+						<HelpSection />
+					</>
+				),
+			},
+			{
+				path: "rolling-lineup",
+				element: <RollingLineup />,
+			},
+		],
 	},
 ]);
 

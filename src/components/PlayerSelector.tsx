@@ -24,16 +24,16 @@ import {
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import PlayerFormRow from "./PlayerFormRow";
+import PlayerRow from "./PlayerRow";
 import { Player, DatabasePlayer } from "@/types/index";
 
-interface PlayerFormProps {
+interface PlayerSelectorProps {
 	players: Player[];
 	filteredPlayers: DatabasePlayer[];
 	setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
 }
 
-const PlayerForm: React.FC<PlayerFormProps> = ({
+const PlayerSelector: React.FC<PlayerSelectorProps> = ({
 	players,
 	filteredPlayers,
 	setPlayers,
@@ -180,7 +180,7 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
 							</div>
 						) : (
 							players.map((player, index) => (
-								<PlayerFormRow
+								<PlayerRow
 									key={index}
 									player={player}
 									index={index}
@@ -196,4 +196,4 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
 	);
 };
 
-export default PlayerForm;
+export default PlayerSelector;

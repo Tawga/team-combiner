@@ -1,18 +1,18 @@
 import React from "react";
-import { Checkbox } from "../../components/ui/checkbox";
-import { Button } from "../../components/ui/button";
-import { Label } from "../../components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Trash } from "lucide-react";
-import { Player } from "../../types/index";
+import { Player } from "@/types/index";
 
-interface PlayerFormRowProps {
+interface PlayerRowProps {
 	player: Player;
 	index: number;
 	onPlayerUpdate: (index: number, player: Player) => void;
 	onPlayerRemove: (index: number) => void;
 }
 
-const PlayerFormRow: React.FC<PlayerFormRowProps> = ({
+const PlayerRow: React.FC<PlayerRowProps> = ({
 	player,
 	index,
 	onPlayerUpdate,
@@ -78,4 +78,4 @@ const PlayerFormRow: React.FC<PlayerFormRowProps> = ({
 	);
 };
 
-export default PlayerFormRow;
+export default PlayerRow;
