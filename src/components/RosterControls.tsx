@@ -10,6 +10,7 @@ import TierSelector from "./TierSelector";
 import PlayerSelector from "./PlayerSelector";
 import { useRosterSelection } from "@/context/RosterSelectionContext";
 import { useMemo } from "react";
+import { _ } from "lodash";
 
 const RosterControls: React.FC = () => {
 	const {
@@ -52,7 +53,15 @@ const RosterControls: React.FC = () => {
 				className="w-full space-y-2"
 			>
 				<div className="flex items-center justify-between space-x-4 px-4 py-2 bg-muted/50 rounded-lg">
-					<h4 className="text-sm font-semibold">Roster Controls</h4>
+					<div className="flex items-center gap-4">
+						<h4 className="text-sm font-semibold">Roster Controls</h4>
+						{!isOpen && (
+							<span className="text-sm text-muted-foreground">
+								{_.startCase(selectedTier?.id)} | {players.length} players -{" "}
+								{players.map((p) => p.player_name).join(", ")}
+							</span>
+						)}
+					</div>
 					<CollapsibleTrigger asChild>
 						<Button variant="ghost" size="sm" className="w-9 p-0">
 							<ChevronsUpDown className="h-4 w-4" />

@@ -46,7 +46,8 @@ const Dashboard: React.FC = () => {
 									Rolling Lineup
 								</CardTitle>
 								<CardDescription>
-									Manage rolling substitutions and lineups (Coming Soon).
+									Manage rolling substitutions and lineups in Scrims (In
+									Testing).
 								</CardDescription>
 							</CardHeader>
 							<CardContent>

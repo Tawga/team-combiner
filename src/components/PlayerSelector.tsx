@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,6 +45,15 @@ const PlayerSelector: React.FC<PlayerSelectorProps> = ({
 
 	const addNewPlayer = () => {
 		if (newPlayer.name && newPlayer.cmv !== undefined) {
+			const isDuplicate = players.some(
+				(p) => p.name.toLowerCase() === newPlayer.name?.toLowerCase(),
+			);
+
+			if (isDuplicate) {
+				toast.error(`${newPlayer.name} is already in the selected players.`);
+				return;
+			}
+
 			setPlayers((prev) => [
 				...prev,
 				{
