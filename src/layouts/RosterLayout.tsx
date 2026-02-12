@@ -27,8 +27,8 @@ const RosterLayoutContent = () => {
 	} = useRosterSelection();
 
 	return (
-		<div className="flex min-h-screen flex-col bg-gray-50">
-			<AppBarComponent title="Team Combiner" />
+		<div className="flex min-h-screen flex-col bg-gray-50 dark:bg-background">
+			<AppBarComponent />
 			<div className="container mx-auto px-4 py-8 max-w-7xl flex-grow space-y-6">
 				<RosterControls />
 				<Outlet />

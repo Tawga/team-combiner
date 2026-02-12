@@ -8,12 +8,9 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { ModeToggle } from "./mode-toggle";
 
-interface AppBarProps {
-	title: string;
-}
-
-const AppBarComponent: React.FC<AppBarProps> = ({ title }) => {
+const AppBarComponent: React.FC = () => {
 	const location = useLocation();
 	const isHome = location.pathname === "/";
 
@@ -25,24 +22,24 @@ const AppBarComponent: React.FC<AppBarProps> = ({ title }) => {
 	const currentName = pathNames[location.pathname];
 
 	return (
-		<header className="mb-6 bg-primary text-primary-foreground shadow-md">
+		<header className="mb-6 bg-slate-900 text-white shadow-md">
 			<div className="container mx-auto px-4 h-16 relative flex items-center justify-between">
 				<div className="hidden md:block z-10">
-					<Breadcrumb className="text-primary-foreground/80">
+					<Breadcrumb className="text-white/80">
 						<BreadcrumbList>
 							<BreadcrumbItem>
 								<BreadcrumbLink
 									asChild
-									className="text-primary-foreground/80 hover:text-primary-foreground"
+									className="text-white/80 hover:text-white"
 								>
 									<Link to="/">Home</Link>
 								</BreadcrumbLink>
 							</BreadcrumbItem>
 							{!isHome && currentName && (
 								<>
-									<BreadcrumbSeparator className="text-primary-foreground/60" />
+									<BreadcrumbSeparator className="text-white/60" />
 									<BreadcrumbItem>
-										<BreadcrumbPage className="text-primary-foreground font-medium">
+										<BreadcrumbPage className="text-white font-medium">
 											{currentName}
 										</BreadcrumbPage>
 									</BreadcrumbItem>
@@ -55,25 +52,27 @@ const AppBarComponent: React.FC<AppBarProps> = ({ title }) => {
 				<h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold tracking-tight">
 					RSC Roster Tools
 				</h1>
-				<div className="w-4"></div>
+				<div className="flex items-center gap-2">
+					<ModeToggle />
+				</div>
 			</div>
 
 			<div className="container mx-auto px-4 pb-2 md:hidden">
-				<Breadcrumb className="text-primary-foreground/80 text-xs">
+				<Breadcrumb className="text-white/80 text-xs">
 					<BreadcrumbList>
 						<BreadcrumbItem>
 							<BreadcrumbLink
 								asChild
-								className="text-primary-foreground/80 hover:text-primary-foreground"
+								className="text-white/80 hover:text-white"
 							>
 								<Link to="/">Home</Link>
 							</BreadcrumbLink>
 						</BreadcrumbItem>
 						{!isHome && currentName && (
 							<>
-								<BreadcrumbSeparator className="text-primary-foreground/60" />
+								<BreadcrumbSeparator className="text-white/60" />
 								<BreadcrumbItem>
-									<BreadcrumbPage className="text-primary-foreground font-medium">
+									<BreadcrumbPage className="text-white font-medium">
 										{currentName}
 									</BreadcrumbPage>
 								</BreadcrumbItem>

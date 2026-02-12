@@ -12,7 +12,7 @@ import { Users, Shuffle } from "lucide-react";
 
 const Dashboard: React.FC = () => {
 	return (
-		<div className="flex flex-col bg-gray-50 items-center justify-center p-4">
+		<div className="flex flex-col bg-gray-50 dark:bg-background items-center justify-center p-4">
 			<div className="max-w-4xl w-full space-y-8">
 				<div className="text-center space-y-2">
 					<p className="text-lg text-muted-foreground">
