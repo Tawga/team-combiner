@@ -7,7 +7,7 @@ import Combinations from "./features/TeamCombiner/TeamCombiner";
 import RosterLayout from "./layouts/RosterLayout";
 import Dashboard from "./pages/Dashboard";
 import RollingLineup from "./features/RollingLineup/RollingLineup";
-import HelpSection from "./components/HelpSection";
+import HelpSection from "./features/TeamCombiner/HelpSection";
 
 const router = createBrowserRouter([
 	{
