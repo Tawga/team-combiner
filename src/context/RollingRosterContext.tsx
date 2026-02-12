@@ -14,6 +14,7 @@ import {
 	RollingState,
 } from "../types/rolling";
 import { recalculateQueue, simulateGameStats } from "../utils/rollingLogic";
+import { DEFAULT_VARIETY_WEIGHT } from "../utils/constants";
 
 interface RollingRosterContextType {
 	state: RollingState;
@@ -49,6 +50,8 @@ export const RollingRosterProvider: React.FC<RollingRosterProviderProps> = ({
 }) => {
 	const { players: selectionPlayers, selectedTier } = useRosterSelection();
 
+	// ... inside RollingRosterProvider
+
 	const [state, setState] = useState<RollingState>({
 		queue: [],
 		history: [],
@@ -59,6 +62,7 @@ export const RollingRosterProvider: React.FC<RollingRosterProviderProps> = ({
 			lineupSize: 3,
 			qualityWeight: 1,
 			fairnessWeight: 1,
+			varietyWeight: DEFAULT_VARIETY_WEIGHT,
 		},
 	});
 
@@ -74,6 +78,7 @@ export const RollingRosterProvider: React.FC<RollingRosterProviderProps> = ({
 				gamesPlayed: 0,
 				benchStreak: 0,
 				isLocked: false,
+				pairCounts: {},
 			}));
 
 			const config: RosterConfig = {
@@ -240,6 +245,7 @@ export const RollingRosterProvider: React.FC<RollingRosterProviderProps> = ({
 				gamesPlayed: 0,
 				benchStreak: 0,
 				isLocked: false,
+				pairCounts: {},
 			}));
 			const queue = recalculateQueue(initialPool, prev.config);
 			return {

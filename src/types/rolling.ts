@@ -5,6 +5,7 @@ export interface ScrimPlayer extends Player {
     gamesPlayed: number;
     benchStreak: number;
     isLocked: boolean; // User override
+    pairCounts: Record<string, number>; // Tracking how many times this player has played with others
 }
 
 export interface MatchLineup {
@@ -28,4 +29,5 @@ export interface RosterConfig {
     lineupSize: number; // 2 or 3
     qualityWeight: number; // For future tuning potentially
     fairnessWeight: number;
+    varietyWeight: number;
 }

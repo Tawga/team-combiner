@@ -1,4 +1,5 @@
-import { ScrimPlayer, MatchLineup, RosterConfig, RollingState } from "../types/rolling";
+import { ScrimPlayer, MatchLineup, RosterConfig } from "../types/rolling";
+import { SCORING } from "./constants";
 
 // 2.1 The "Weighted Urgency" Scoring
 // Score = (GamesPlayed * 10) - (BenchStreak * 50)
@@ -8,13 +9,12 @@ export const calculateUrgencyScore = (player: ScrimPlayer): number => {
     if (player.isLocked) return -100000;
 
     // Base score
-    let score = (player.gamesPlayed * 10) - (player.benchStreak * 50);
+    let score = (player.gamesPlayed * SCORING.GAMES_PLAYED_WEIGHT) - (player.benchStreak * SCORING.BENCH_STREAK_WEIGHT);
 
     // Tie-breaker: Higher CMV plays first if scores are equal? 
     // "Quality Factor: Sort players by cmv initially so that the best players are fielded first."
     // If we want high CMV to have lower score (higher priority), subtract a fraction of CMV
-    // e.g. - (player.cmv * 0.01)
-    score -= (player.cmv * 0.001);
+    score -= (player.cmv * SCORING.CMV_PENALTY_FACTOR);
 
     return score;
 };
@@ -66,6 +66,34 @@ export const validateLineup = (
     return { isValid: true, ghost: cheapestBench };
 };
 
+// Helper to generate combinations
+function getCombinations<T>(arr: T[], size: number): T[][] {
+    if (size === 0) return [[]];
+    if (arr.length === 0) return [];
+
+    const [first, ...rest] = arr;
+
+    const withFirst = getCombinations(rest, size - 1).map(combo => [first, ...combo]);
+    const withoutFirst = getCombinations(rest, size);
+
+    return [...withFirst, ...withoutFirst];
+}
+
+// Calculate pairwise fatigue score for a potential lineup
+const calculateVarietyPenalty = (lineup: ScrimPlayer[], varietyWeight: number): number => {
+    let pairScore = 0;
+    for (let i = 0; i < lineup.length; i++) {
+        for (let j = i + 1; j < lineup.length; j++) {
+            const p1 = lineup[i];
+            const p2 = lineup[j];
+            // Check both directions just in case, though they should be synced
+            const count = (p1.pairCounts?.[p2.id] || 0);
+            pairScore += count;
+        }
+    }
+    return pairScore * varietyWeight;
+};
+
 // Helper: Generate structured lineup from specialized player pool
 // This function purely calculates the BEST mathematical lineup from the provided pool state
 export const generateNextLineup = (
@@ -75,31 +103,87 @@ export const generateNextLineup = (
     // 1. Separation: Locked vs Unlocked
     const lockedPlayers = pool.filter(p => p.isLocked);
     const availablePlayers = pool.filter(p => !p.isLocked);
-
-    // If locked >= size, just use them (or first size)
-    let active: ScrimPlayer[] = [];
     const size = config.lineupSize;
 
+    // If locked >= size, just use them (or first size)
     if (lockedPlayers.length >= size) {
-        active = lockedPlayers.slice(0, size);
-    } else {
-        active = [...lockedPlayers];
+        const active = lockedPlayers.slice(0, size);
+        const bench = pool.filter(p => !active.find(a => a.id === p.id));
+        const validation = validateLineup(active, bench, config.tier.max_cap, config.enforceCap, config.lineupSize);
+        return {
+            active,
+            bench,
+            isValid: validation.isValid,
+            ghostPlayer: validation.ghost,
+            validationError: validation.error
+        };
+    }
 
-        // 2. Sort available by Urgency Score
-        // Lower score = better
-        const sortedAvailable = [...availablePlayers].sort((a, b) => {
-            return calculateUrgencyScore(a) - calculateUrgencyScore(b);
-        });
+    // We need to pick (size - locked.length) players from availablePlayers
+    const needed = size - lockedPlayers.length;
 
-        // 3. Pick top 'needed'
-        // Simple Greedy approach first:
-        for (const candidate of sortedAvailable) {
-            if (active.length < size) {
-                active.push(candidate);
+    // Generate all combinations of available players
+    const combinations = getCombinations(availablePlayers, needed);
+
+    // If no combinations (e.g. not enough players), just take what we have
+    if (combinations.length === 0 && needed > 0) {
+        // Fallback: take all available
+        const active = [...lockedPlayers, ...availablePlayers];
+        const bench: ScrimPlayer[] = [];
+        const validation = validateLineup(active, bench, config.tier.max_cap, config.enforceCap, config.lineupSize);
+        return {
+            active,
+            bench: [],
+            isValid: validation.isValid,
+            ghostPlayer: validation.ghost,
+            validationError: validation.error
+        };
+    }
+
+    // Score each combination
+    let bestCombo: ScrimPlayer[] = combinations[0];
+    let bestScore = Infinity;
+
+    // Separate tracking for valid vs invalid lineups when cap is enforced
+    let bestValidCombo: ScrimPlayer[] | null = null;
+    let bestValidScore = Infinity;
+
+    for (const combo of combinations) {
+        const potentialLineup = [...lockedPlayers, ...combo];
+        const potentialBench = pool.filter(p => !potentialLineup.find(a => a.id === p.id));
+
+        // 1. Urgency Score
+        const urgencySum = potentialLineup.reduce((sum, p) => sum + calculateUrgencyScore(p), 0);
+
+        // 2. Variety Penalty
+        const varietyPenalty = calculateVarietyPenalty(potentialLineup, config.varietyWeight);
+
+        const totalScore = urgencySum + varietyPenalty;
+
+        // Check Validity
+        const validation = validateLineup(potentialLineup, potentialBench, config.tier.max_cap, config.enforceCap, config.lineupSize);
+
+        if (config.enforceCap && validation.isValid) {
+            if (totalScore < bestValidScore) {
+                bestValidScore = totalScore;
+                bestValidCombo = combo;
             }
+        }
+
+        if (totalScore < bestScore) {
+            bestScore = totalScore;
+            bestCombo = combo;
         }
     }
 
+    // Decision Logic:
+    // If enforceCap is ON and we found ANY valid lineup, use the best VALID one.
+    // Otherwise fallback to the best overall (which might be invalid, or valid if cap is off).
+    if (config.enforceCap && bestValidCombo) {
+        bestCombo = bestValidCombo;
+    }
+
+    const active = [...lockedPlayers, ...bestCombo];
     const bench = pool.filter(p => !active.find(a => a.id === p.id));
 
     // Validate
@@ -119,13 +203,39 @@ export const generateNextLineup = (
  * Returns a NEW array of players with updated stats.
  */
 export const simulateGameStats = (pool: ScrimPlayer[], lineup: MatchLineup): ScrimPlayer[] => {
+    const activeIds = new Set(lineup.active.map(p => p.id));
+
+    // Update Pairwise Counts for active players
+    // We need a map of ID -> new pair counts to avoid mutating input directly effectively
+    // But since we map the pool, we can just handle it inside
+
+    // First, let's calculate the new pairs to add
+    // We can't easily mutate inside map, so let's pre-calculate updates
+    const pairUpdates: Record<string, string[]> = {}; // PlayerID -> List of TeammateIDs to increment
+
+    for (const p of lineup.active) {
+        pairUpdates[p.id] = [];
+        for (const teammate of lineup.active) {
+            if (p.id !== teammate.id) {
+                pairUpdates[p.id].push(teammate.id);
+            }
+        }
+    }
+
     return pool.map(p => {
-        const isActive = lineup.active.find(a => a.id === p.id);
-        const newP = { ...p };
+        const isActive = activeIds.has(p.id);
+        const newP = { ...p, pairCounts: { ...(p.pairCounts || {}) } }; // Shallow copy pairCounts
 
         if (isActive) {
             newP.gamesPlayed += 1;
             newP.benchStreak = 0;
+
+            // Update pair counts
+            const teammates = pairUpdates[p.id] || [];
+            for (const tId of teammates) {
+                newP.pairCounts[tId] = (newP.pairCounts[tId] || 0) + 1;
+            }
+
         } else {
             newP.benchStreak += 1;
         }

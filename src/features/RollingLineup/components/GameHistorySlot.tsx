@@ -13,7 +13,7 @@ const GameHistorySlot: React.FC<GameHistorySlotProps> = ({ history }) => {
 	if (history.length === 0) return null;
 
 	// Show latest games first
-	const reversedHistory = [...history].reverse();
+	const displayHistory = history;
 
 	return (
 		<Card className="w-full border shadow-sm">
@@ -28,7 +28,7 @@ const GameHistorySlot: React.FC<GameHistorySlotProps> = ({ history }) => {
 			<CardContent className="p-0">
 				<ScrollArea className="h-[250px] w-full p-4">
 					<div className="space-y-3">
-						{reversedHistory.map((game, i) => {
+						{displayHistory.map((game, i) => {
 							const matchNum = history.length - i;
 							const totalCmv = game.active.reduce((sum, p) => sum + p.cmv, 0);
 
