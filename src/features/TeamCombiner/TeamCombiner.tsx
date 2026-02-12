@@ -7,15 +7,25 @@ import { Roster } from "@/types";
 const Combinations = () => {
 	const { players, selectedTier } = useRosterSelection();
 	const [possibleRosters, setPossibleRosters] = useState<Roster[]>([]);
+	const [rosterStats, setRosterStats] = useState({
+		totalChecked: 0,
+		rejectedMax: 0,
+		rejectedMin: 0,
+	});
 
 	// Recalculate possible rosters whenever the players or selected tier change
 	useEffect(() => {
-		const rosters = calculatePossibleRosters(
+		const result = calculatePossibleRosters(
 			players,
 			selectedTier?.max_cap,
 			selectedTier?.min_cap,
 		);
-		setPossibleRosters(rosters as Roster[]);
+		setPossibleRosters(result.rosters);
+		setRosterStats({
+			totalChecked: result.totalChecked,
+			rejectedMax: result.rejectedMax,
+			rejectedMin: result.rejectedMin,
+		});
 	}, [players, selectedTier]);
 
 	return (
@@ -23,6 +33,7 @@ const Combinations = () => {
 			possibleRosters={possibleRosters}
 			teamCap={selectedTier?.max_cap}
 			minCap={selectedTier?.min_cap}
+			stats={rosterStats}
 		/>
 	);
 };

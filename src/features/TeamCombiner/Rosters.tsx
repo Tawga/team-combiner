@@ -12,18 +12,31 @@ interface RostersProps {
 	possibleRosters: Roster[];
 	teamCap: number | undefined;
 	minCap: number | undefined;
+	stats: {
+		totalChecked: number;
+		rejectedMax: number;
+		rejectedMin: number;
+	};
 }
 
 const Rosters: React.FC<RostersProps> = ({
 	possibleRosters,
 	teamCap,
 	minCap,
+	stats,
 }) => {
+	const rejectedCount = stats.rejectedMax + stats.rejectedMin;
 	return (
 		<Card className="w-full">
 			<CardHeader>
-				<CardTitle className="text-md">
-					Possible rosters ({possibleRosters.length})
+				<CardTitle className="text-md flex items-center gap-2">
+					<span>Possible rosters ({possibleRosters.length})</span>
+					{stats && stats.totalChecked > possibleRosters.length && (
+						<span className="text-sm font-normal text-muted-foreground">
+							{stats.totalChecked} total rosters | {rejectedCount} roster
+							{rejectedCount !== 1 ? "s" : ""} rejected due to cap limit
+						</span>
+					)}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
