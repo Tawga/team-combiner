@@ -26,18 +26,22 @@ import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import PlayerRow from "./PlayerRow";
-import { Player, DatabasePlayer } from "@/types/index";
+import { Player, DatabasePlayer, TierCap } from "@/types/index";
+import RosterBudgetBar from "./RosterBudgetBar";
+import { ROSTER_SIZE } from "@/lib/constants";
 
 interface PlayerSelectorProps {
 	players: Player[];
 	filteredPlayers: DatabasePlayer[];
 	setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
+	selectedTier?: TierCap;
 }
 
 const PlayerSelector: React.FC<PlayerSelectorProps> = ({
 	players,
 	filteredPlayers,
 	setPlayers,
+	selectedTier,
 }) => {
 	const [newPlayer, setNewPlayer] = useState<Partial<Player>>({});
 	const [open, setOpen] = useState(false);
@@ -199,6 +203,15 @@ const PlayerSelector: React.FC<PlayerSelectorProps> = ({
 								/>
 							))
 						)}
+						{selectedTier &&
+							players.length <= ROSTER_SIZE &&
+							players.length > 0 && (
+								<RosterBudgetBar
+									totalCmv={players.reduce((sum, p) => sum + (p.cmv || 0), 0)}
+									minCap={selectedTier.min_cap}
+									maxCap={selectedTier.max_cap}
+								/>
+							)}
 					</CollapsibleContent>
 				</Collapsible>
 			</CardContent>

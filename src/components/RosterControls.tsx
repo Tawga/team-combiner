@@ -81,6 +81,7 @@ const RosterControls: React.FC = () => {
 						setPlayers={setPlayers}
 						filteredPlayers={sortedAndFilteredPlayers}
 						players={players}
+						selectedTier={selectedTier}
 					/>
 				</CollapsibleContent>
 			</Collapsible>
